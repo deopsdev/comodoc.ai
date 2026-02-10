@@ -15,7 +15,9 @@
   ],
   "author": "Deops Dev (https://deopsdev.github.io)",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "duck-duck-scrape": "^2.2.7"
+  },
   "engines": {
     "node": ">=18.0.0"
   }

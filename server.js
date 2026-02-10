@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const { search, SafeSearchType } = require('duck-duck-scrape');
 
 // Use process.env.PORT for deployment (Heroku/Render/Railway) or fallback to 3030 locally
 const PORT = process.env.PORT || 3030;
@@ -112,8 +113,39 @@ const requestHandler = async (req, res) => {
                         messages[lastMsgIndex].content = message;
                     }
                 }
-                // ---------------------------------------------------
                 
+                // --- NEW: WEB SEARCH CAPABILITY (RESEARCH) ---
+                // Detect if user needs up-to-date info and search DuckDuckGo
+                const lastMsgContent = messages[messages.length - 1].content;
+                // Simple keyword detection for "research" intent
+                const searchKeywords = ['cari', 'search', 'berita', 'news', 'terbaru', 'latest', 'update', '2024', '2025', '2026', 'harga', 'jadwal', 'skor', 'siapa', 'apa itu', 'dimana', 'kapan', 'research', 'riset'];
+                const needsSearch = searchKeywords.some(kw => lastMsgContent.toLowerCase().includes(kw));
+
+                if (needsSearch) {
+                    try {
+                        console.log('🔍 Searching web for:', lastMsgContent);
+                        const searchResults = await search(lastMsgContent, {
+                            safeSearch: SafeSearchType.MODERATE
+                        });
+
+                        if (searchResults && searchResults.results) {
+                            // Take top 5 results
+                            const topResults = searchResults.results.slice(0, 5).map(r => 
+                                `[Title: ${r.title}]\n(URL: ${r.url})\nSnippet: ${r.description}`
+                            ).join('\n\n');
+
+                            // Inject into the prompt
+                            const searchContext = `\n\n=== 🌍 REAL-TIME WEB SEARCH RESULTS ===\nUse the following information to answer the user's question with up-to-date facts:\n\n${topResults}\n=======================================\n`;
+                            
+                            messages[messages.length - 1].content += searchContext;
+                            console.log('✅ Search results injected into context.');
+                        }
+                    } catch (err) {
+                        console.error('⚠️ Search failed:', err.message);
+                    }
+                }
+                // ---------------------------------------------------
+
                 // Call Pollinations AI with Mistral
                 const response = await fetch('https://text.pollinations.ai/', {
                     method: 'POST',
