@@ -5,7 +5,7 @@ const path = require('path');
 // Use process.env.PORT for deployment (Heroku/Render/Railway) or fallback to 3030 locally
 const PORT = process.env.PORT || 3030;
 
-const server = http.createServer(async (req, res) => {
+const requestHandler = async (req, res) => {
     console.log(`${req.method} ${req.url}`);
 
     // CORS headers (useful if we were on different ports, but we are serving from same origin)
@@ -156,8 +156,15 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(404);
         res.end('Not Found');
     }
-});
+};
 
-server.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}/`);
-});
+const server = http.createServer(requestHandler);
+
+// Only listen if run directly (not imported as a module/serverless function)
+if (require.main === module) {
+    server.listen(PORT, () => {
+        console.log(`Server running at http://localhost:${PORT}/`);
+    });
+}
+
+module.exports = requestHandler;
