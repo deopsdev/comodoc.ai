@@ -82,7 +82,7 @@ const requestHandler = async (req, res) => {
                 res.end(content);
             }
         });
-    } else if (req.url === '/favicon.svg') {
+    } else if (req.url.startsWith('/favicon.svg')) {
         const svgContent = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <circle cx="50" cy="50" r="45" fill="#1e1e1e" stroke="#00ffcc" stroke-width="5"/>
