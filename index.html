@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta property="og:title" content="Komodoc.ai - AI Helper">
+        <meta property="og:description" content="Your personal AI helper. Ask me anything!">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://github.com/deopsdev/komodoc.ai">
+        <meta property="og:image" content="ogimage.png">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Komodoc - AI Helper</title>
+        <link rel="icon" type="image/svg+xml" href="favicon.svg">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <header style="text-align: center;">
+        <h1>Komodoc - Your Ai Helper</h1>
+        <p>Hi there! I'm Komodoc, your friendly AI buddy. Let's chat and solve things together!</p>
+        </header>
+            <div id="chat-container">
+                <div id="chat-messages">
+                    <!-- Chat messages will appear here -->
+                    <div class="message system">Hello! How can I help you today?</div>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="user-input" placeholder="Type your message here...">
+                    <button id="send-button">Send</button>
+                    <button id="save-button" title="Save Chat">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <footer style="text-align: center;">
+                <p>&copy; 2026 Komodoc. Open Source AI Interface by <a href="https://deopsdev.github.io" target="_blank" style="color: #00ffcc; text-decoration: none;">Deops Dev</a>.</p>
+                <div style="font-size: 0.8em; color: #666; margin-top: 5px;">
+                    Powered by <a href="https://mistral.ai" target="_blank">Mistral AI</a> & <a href="https://pollinations.ai" target="_blank">Pollinations.ai</a>.
+                    <br>
+                    <em>Just a heads-up: Our chats fly through the cloud, so keep your secrets safe!</em>
+                </div>
+            </footer>
+        <script src="script.js"></script>
+    </body>
+</html>

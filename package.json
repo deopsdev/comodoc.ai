@@ -1,0 +1,22 @@
+{
+  "name": "komodoc-ai",
+  "version": "1.0.0",
+  "description": "Komodoc - Your Privacy-Focused AI Helper",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "ai",
+    "chatbot",
+    "mistral",
+    "privacy"
+  ],
+  "author": "Deops Dev (https://deopsdev.github.io)",
+  "license": "ISC",
+  "dependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

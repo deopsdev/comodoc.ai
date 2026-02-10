@@ -1,0 +1,225 @@
+body {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace; /* Machine/Terminal font */
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    box-sizing: border-box;
+    background-color: #1e1e1e; /* Dark Machine Grey */
+    color: #d4d4d4; /* Silver/Steel text */
+}
+
+.main-layout {
+    display: flex;
+    flex: 1;
+    gap: 20px;
+    overflow: hidden;
+}
+
+header {
+    text-align: center;
+    border-bottom: 2px solid #333; /* Industrial divider */
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #00ffcc; /* Cyan indicator light */
+    letter-spacing: 2px;
+    font-size: 1.5em;
+    margin: 0;
+}
+
+header p {
+    color: #888;
+    font-size: 0.8em;
+}
+
+#chat-container {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    /* No border, no background box as requested */
+    border: none; 
+    background-color: transparent;
+    padding: 0;
+}
+
+#chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    /* Remove border bottom */
+    border-bottom: 1px solid #333;
+    margin-bottom: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background-color: #252526;
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 4px; /* Minimal rounding */
+    flex-wrap: wrap; /* Allow wrapping on small screens/high zoom */
+}
+
+#user-input {
+    flex: 1;
+    padding: 10px;
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    color: #d4d4d4;
+    font-family: inherit;
+    border-radius: 0; /* Square/Machine look */
+    min-width: 150px; /* Ensure it doesn't get too small before wrapping */
+}
+
+#user-input:focus {
+    outline: none;
+    border-color: #00ffcc;
+}
+
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #333; /* Dark button */
+    color: #00ffcc; /* Neon text */
+    border: 1px solid #00ffcc;
+    border-radius: 0; /* Square buttons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.8em;
+    transition: all 0.2s;
+    flex-shrink: 0; /* Prevent buttons from being squashed */
+}
+
+button:hover {
+    background-color: #00ffcc;
+    color: #1e1e1e;
+}
+
+#save-button {
+    background-color: #333;
+    color: #ff9900; /* Amber for save */
+    border-color: #ff9900;
+    padding: 10px;
+}
+
+#save-button:hover {
+    background-color: #ff9900;
+    color: #1e1e1e;
+}
+
+/* History Column (if visible) */
+#chat-column {
+    flex: 1;
+    border: 1px solid #333;
+    border-radius: 0;
+    padding: 10px;
+    background-color: #252526;
+    display: flex;
+    flex-direction: column;
+}
+
+#history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+}
+
+.history-item {
+    padding: 8px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+    color: #888;
+}
+
+.history-item:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Messages */
+.message {
+    margin: 10px 0;
+    padding: 15px 20px;
+    border-radius: 0; /* Squared corners for machine look */
+    max-width: 80%;
+    word-wrap: break-word;
+    font-size: 1em;
+    line-height: 1.8; /* Increased for better readability */
+    letter-spacing: 0.5px; /* Slight spacing for clarity */
+}
+
+.message p {
+    margin-bottom: 15px; /* Add space between paragraphs */
+}
+
+.message p:last-child {
+    margin-bottom: 0;
+}
+
+.message.user {
+    background-color: transparent; /* No box for user */
+    color: #00ffcc; /* Cyan text */
+    align-self: flex-end;
+    margin-left: auto;
+    margin-right: 0;
+    border-left: 3px solid #00ffcc; /* Indicator line instead of box */
+    padding-left: 15px;
+    text-align: right;
+}
+
+.message.ai {
+    background-color: transparent; /* No box for AI */
+    color: #d4d4d4; /* Standard steel text */
+    align-self: flex-start;
+    margin-right: auto;
+    border-left: 3px solid #d4d4d4; /* Indicator line */
+    padding-left: 15px;
+}
+
+.message.system {
+    background-color: transparent;
+    color: #ff9900; /* Amber warning/system */
+    font-style: italic;
+    text-align: center;
+    align-self: center;
+    font-size: 0.8em;
+    border: none;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    font-size: 0.8em;
+    color: #555;
+    border-top: 1px solid #333;
+    margin-top: 10px;
+}
+
+/* Scrollbar styling for Webkit */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #444;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
