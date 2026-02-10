@@ -1,10 +1,42 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const { search, SafeSearchType } = require('duck-duck-scrape');
+const axios = require('axios');
+const cheerio = require('cheerio');
 
 // Use process.env.PORT for deployment (Heroku/Render/Railway) or fallback to 3030 locally
 const PORT = process.env.PORT || 3030;
+
+// --- HELPER: SEARCH WEB (BING) ---
+async function searchWeb(query) {
+    try {
+        console.log('🔍 Searching Bing for:', query);
+        const response = await axios.get(`https://www.bing.com/search?q=${encodeURIComponent(query)}`, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            }
+        });
+
+        const $ = cheerio.load(response.data);
+        const results = [];
+        
+        $('.b_algo').each((i, el) => {
+            if (i >= 5) return;
+            const title = $(el).find('h2').text().trim();
+            const link = $(el).find('a').attr('href');
+            const snippet = $(el).find('.b_caption p').text().trim() || $(el).find('.b_snippet').text().trim();
+            
+            if (title && link) {
+                results.push({ title, url: link, description: snippet });
+            }
+        });
+        
+        return { results };
+    } catch (e) {
+        console.error('Search Error:', e.message);
+        return { results: [] };
+    }
+}
 
 const requestHandler = async (req, res) => {
     console.log(`${req.method} ${req.url}`);
@@ -54,7 +86,7 @@ const requestHandler = async (req, res) => {
         const svgContent = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <circle cx="50" cy="50" r="45" fill="#1e1e1e" stroke="#00ffcc" stroke-width="5"/>
-  <text x="50" y="65" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="#00ffcc" text-anchor="middle">C</text>
+  <text x="50" y="70" font-family="Arial, sans-serif" font-size="65" font-weight="bold" fill="#00ffcc" text-anchor="middle">K</text>
 </svg>`;
         res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
         res.end(svgContent);
@@ -123,22 +155,21 @@ const requestHandler = async (req, res) => {
 
                 if (needsSearch) {
                     try {
-                        console.log('🔍 Searching web for:', lastMsgContent);
-                        const searchResults = await search(lastMsgContent, {
-                            safeSearch: SafeSearchType.MODERATE
-                        });
+                        const searchResults = await searchWeb(lastMsgContent);
 
-                        if (searchResults && searchResults.results) {
+                        if (searchResults && searchResults.results && searchResults.results.length > 0) {
                             // Take top 5 results
                             const topResults = searchResults.results.slice(0, 5).map(r => 
                                 `[Title: ${r.title}]\n(URL: ${r.url})\nSnippet: ${r.description}`
                             ).join('\n\n');
 
                             // Inject into the prompt
-                            const searchContext = `\n\n=== 🌍 REAL-TIME WEB SEARCH RESULTS ===\nUse the following information to answer the user's question with up-to-date facts:\n\n${topResults}\n=======================================\n`;
+                            const searchContext = `\n\n=== 🌍 REAL-TIME WEB SEARCH RESULTS (FROM BING) ===\nI have performed a web search for you. Use the following information to answer the user's question with up-to-date facts. DO NOT tell the user to search themselves; YOU have the search results right here:\n\n${topResults}\n=======================================\n`;
                             
                             messages[messages.length - 1].content += searchContext;
                             console.log('✅ Search results injected into context.');
+                        } else {
+                            console.log('⚠️ Search returned no results.');
                         }
                     } catch (err) {
                         console.error('⚠️ Search failed:', err.message);
