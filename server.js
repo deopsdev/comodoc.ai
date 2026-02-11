@@ -25,7 +25,7 @@ async function searchWeb(query) {
         $('.b_algo').each((i, el) => {
             if (i >= 5) return;
             const title = $(el).find('h2').text().trim();
-            const link = $(el).find('a').attr('href');olong CustomElementRegistry
+            const link = $(el).find('a').attr('href');
             // Try multiple snippet selectors
             const snippet = $(el).find('.b_caption p').text().trim() || 
                            $(el).find('.b_snippet').text().trim() ||
