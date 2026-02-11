@@ -155,15 +155,36 @@ const requestHandler = async (req, res) => {
 
                 if (needsSearch) {
                     try {
-                        const searchResults = await searchWeb(lastMsgContent);
+                        // --- SMART QUERY OPTIMIZATION ---
+                        // Instead of searching raw user input, we optimize it for better results
+                        // e.g. "bola hari ini" -> "jadwal bola hari ini [current_date] scores"
+                        
+                        const dateStr = new Date().toLocaleDateString('id-ID', { 
+                            day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta'
+                        });
+
+                        let searchQuery = lastMsgContent;
+                        
+                        // Add context boosters based on keywords
+                        const lowerMsg = lastMsgContent.toLowerCase();
+                        if (lowerMsg.includes('bola') || lowerMsg.includes('pertandingan') || lowerMsg.includes('jadwal') || lowerMsg.includes('skor')) {
+                            searchQuery = `jadwal hasil pertandingan bola hari ini ${dateStr} terkini`;
+                        } else if (lowerMsg.includes('cuaca')) {
+                            searchQuery = `prakiraan cuaca hari ini ${dateStr} bmkg`;
+                        } else if (lowerMsg.includes('berita')) {
+                            searchQuery = `berita terkini hari ini ${dateStr} indonesia`;
+                        }
+
+                        console.log(`🔍 Optimized Search Query: "${searchQuery}"`);
+                        const searchResults = await searchWeb(searchQuery);
 
                         if (searchResults && searchResults.results && searchResults.results.length > 0) {
                             // Take top 5 results
                             const topResults = searchResults.results.slice(0, 5).map(r => 
-                                `[Title: ${r.title}]\n(URL: ${r.url})\nSnippet: ${r.description}`
+                                `[Source: ${r.title}]\n(URL: ${r.url})\nContent: ${r.description}`
                             ).join('\n\n');
 
-                            // Inject into the prompt
+                            // Inject into the prompt with STRICTER instructions
                             const currentDate = new Date().toLocaleDateString('id-ID', { 
                                 weekday: 'long', 
                                 year: 'numeric', 
@@ -172,7 +193,7 @@ const requestHandler = async (req, res) => {
                                 timeZone: 'Asia/Jakarta'
                             });
                             
-                            const searchContext = `\n\n=== 🌍 REAL-TIME WEB SEARCH RESULTS (FROM BING) ===\n[System Note: Today is ${currentDate}]\nI have performed a web search for you. Use the following information to answer the user's question with up-to-date facts. DO NOT tell the user to search themselves; YOU have the search results right here:\n\n${topResults}\n=======================================\n`;
+                            const searchContext = `\n\n=== 🌍 LIVE SEARCH DATA (VERIFIED FACTS) ===\n[Date: ${currentDate}]\nHere is the real-time data I found for you. \n\n${topResults}\n\nINSTRUCTIONS FOR AI:\n1. Use the data above to answer specifically. \n2. Mention specific team names, scores, or times if available in the data.\n3. If the search results contain the answer, say it directly. Do NOT say "biasanya" or "mungkin".\n4. If the results mention specific matches happening today, LIST THEM.\n=======================================\n`;
                             
                             messages[messages.length - 1].content += searchContext;
                             console.log('✅ Search results injected into context.');
