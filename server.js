@@ -11,9 +11,11 @@ const PORT = process.env.PORT || 3030;
 async function searchWeb(query) {
     try {
         console.log('🔍 Searching Bing for:', query);
-        const response = await axios.get(`https://www.bing.com/search?q=${encodeURIComponent(query)}`, {
+        // Add cc=ID for Indonesian context and explicit language headers
+        const response = await axios.get(`https://www.bing.com/search?q=${encodeURIComponent(query)}&cc=ID`, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7'
             }
         });
 
@@ -24,7 +26,10 @@ async function searchWeb(query) {
             if (i >= 5) return;
             const title = $(el).find('h2').text().trim();
             const link = $(el).find('a').attr('href');
-            const snippet = $(el).find('.b_caption p').text().trim() || $(el).find('.b_snippet').text().trim();
+            // Try multiple snippet selectors
+            const snippet = $(el).find('.b_caption p').text().trim() || 
+                           $(el).find('.b_snippet').text().trim() ||
+                           $(el).find('p').text().trim();
             
             if (title && link) {
                 results.push({ title, url: link, description: snippet });
@@ -168,11 +173,12 @@ const requestHandler = async (req, res) => {
                         // Add context boosters based on keywords
                         const lowerMsg = lastMsgContent.toLowerCase();
                         if (lowerMsg.includes('bola') || lowerMsg.includes('pertandingan') || lowerMsg.includes('jadwal') || lowerMsg.includes('skor')) {
-                            searchQuery = `jadwal hasil pertandingan bola hari ini ${dateStr} terkini`;
+                            // For sports, generic "hari ini" often yields better live results than specific dates
+                            searchQuery = `jadwal bola hari ini live score terkini`;
                         } else if (lowerMsg.includes('cuaca')) {
                             searchQuery = `prakiraan cuaca hari ini ${dateStr} bmkg`;
                         } else if (lowerMsg.includes('berita')) {
-                            searchQuery = `berita terkini hari ini ${dateStr} indonesia`;
+                            searchQuery = `berita terkini hari ini indonesia`;
                         }
 
                         console.log(`🔍 Optimized Search Query: "${searchQuery}"`);
