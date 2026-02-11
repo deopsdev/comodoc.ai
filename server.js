@@ -103,7 +103,7 @@ const requestHandler = async (req, res) => {
         req.on('end', async () => {
             try {
                 // Expect an array of messages now
-                let { messages } = JSON.parse(body);
+                let { messages, researchMode } = JSON.parse(body);
 
                 // --- ADVANCED PII SAFETY FILTER (COMPREHENSIVE) ---
                 // We only need to filter the LAST message from the user
@@ -154,9 +154,8 @@ const requestHandler = async (req, res) => {
                 // --- NEW: WEB SEARCH CAPABILITY (RESEARCH) ---
                 // Detect if user needs up-to-date info and search DuckDuckGo
                 const lastMsgContent = messages[messages.length - 1].content;
-                // ALWAYS perform search for every user message to ensure up-to-date context
-                // We remove the keyword check and default to searching for the user's last message
-                const needsSearch = true; 
+                // Only perform search if researchMode is enabled by the user
+                const needsSearch = researchMode === true;
 
                 if (needsSearch) {
                     try {
@@ -205,9 +204,12 @@ const requestHandler = async (req, res) => {
                             console.log('✅ Search results injected into context.');
                         } else {
                             console.log('⚠️ Search returned no results.');
+                            // Fallback: Inform the AI that search was attempted but failed
+                            messages[messages.length - 1].content += `\n\n[System Note: Research Mode was active, but no relevant search results were found for this query. If the user asked for current events, apologize and mention you couldn't find live data.]`;
                         }
                     } catch (err) {
                         console.error('⚠️ Search failed:', err.message);
+                         messages[messages.length - 1].content += `\n\n[System Note: Research Mode error: ${err.message}]`;
                     }
                 }
                 // ---------------------------------------------------
