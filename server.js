@@ -225,7 +225,11 @@ const requestHandler = async (req, res) => {
                 
                 const systemPrompt = {
                     role: 'system',
-                    content: `You are Komodoc, a helpful AI assistant. Today is ${currentDate}. Always answer based on the current date unless specified otherwise.`
+                    content: `You are Komodoc, a smart AI assistant with REAL-TIME INTERNET ACCESS. 
+                    - You CAN research topics, check live scores, news, and weather.
+                    - When asked "what can you do" or "can you research", you MUST explicitly state that you can browse the web for real-time information.
+                    - NEVER say you don't have internet access. You receive search results directly in your context.
+                    - Today is ${currentDate}.`
                 };
                 
                 // Prepend system prompt if it doesn't exist
