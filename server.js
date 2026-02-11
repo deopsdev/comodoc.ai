@@ -149,9 +149,9 @@ const requestHandler = async (req, res) => {
                 // --- NEW: WEB SEARCH CAPABILITY (RESEARCH) ---
                 // Detect if user needs up-to-date info and search DuckDuckGo
                 const lastMsgContent = messages[messages.length - 1].content;
-                // Simple keyword detection for "research" intent
-                const searchKeywords = ['cari', 'search', 'berita', 'news', 'terbaru', 'latest', 'update', '2024', '2025', '2026', 'harga', 'jadwal', 'skor', 'siapa', 'apa itu', 'dimana', 'kapan', 'research', 'riset'];
-                const needsSearch = searchKeywords.some(kw => lastMsgContent.toLowerCase().includes(kw));
+                // ALWAYS perform search for every user message to ensure up-to-date context
+                // We remove the keyword check and default to searching for the user's last message
+                const needsSearch = true; 
 
                 if (needsSearch) {
                     try {
