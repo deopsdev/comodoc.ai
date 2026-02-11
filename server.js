@@ -164,7 +164,15 @@ const requestHandler = async (req, res) => {
                             ).join('\n\n');
 
                             // Inject into the prompt
-                            const searchContext = `\n\n=== 🌍 REAL-TIME WEB SEARCH RESULTS (FROM BING) ===\nI have performed a web search for you. Use the following information to answer the user's question with up-to-date facts. DO NOT tell the user to search themselves; YOU have the search results right here:\n\n${topResults}\n=======================================\n`;
+                            const currentDate = new Date().toLocaleDateString('id-ID', { 
+                                weekday: 'long', 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric',
+                                timeZone: 'Asia/Jakarta'
+                            });
+                            
+                            const searchContext = `\n\n=== 🌍 REAL-TIME WEB SEARCH RESULTS (FROM BING) ===\n[System Note: Today is ${currentDate}]\nI have performed a web search for you. Use the following information to answer the user's question with up-to-date facts. DO NOT tell the user to search themselves; YOU have the search results right here:\n\n${topResults}\n=======================================\n`;
                             
                             messages[messages.length - 1].content += searchContext;
                             console.log('✅ Search results injected into context.');
@@ -178,6 +186,30 @@ const requestHandler = async (req, res) => {
                 // ---------------------------------------------------
 
                 // Call Pollinations AI with Mistral
+                
+                // Add System Prompt for Date Awareness (if not present)
+                const currentDate = new Date().toLocaleDateString('id-ID', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    timeZone: 'Asia/Jakarta'
+                });
+                
+                const systemPrompt = {
+                    role: 'system',
+                    content: `You are Komodoc, a helpful AI assistant. Today is ${currentDate}. Always answer based on the current date unless specified otherwise.`
+                };
+                
+                // Prepend system prompt if it doesn't exist
+                if (!messages.some(m => m.role === 'system')) {
+                    messages.unshift(systemPrompt);
+                } else {
+                    // Update existing system prompt with date
+                    const sysIdx = messages.findIndex(m => m.role === 'system');
+                    messages[sysIdx].content += ` (Today is ${currentDate})`;
+                }
+
                 const response = await fetch('https://text.pollinations.ai/', {
                     method: 'POST',
                     headers: { 
