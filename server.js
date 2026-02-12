@@ -11,31 +11,52 @@ const PORT = process.env.PORT || 3030;
 async function searchWeb(query) {
     try {
         console.log('🔍 Searching Bing for:', query);
-        // Add cc=ID for Indonesian context and explicit language headers
+        // Use a more robust search approach if needed, but Bing works if selectors are correct
         const response = await axios.get(`https://www.bing.com/search?q=${encodeURIComponent(query)}&cc=ID`, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7'
-            }
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+                'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
+                'Referer': 'https://www.bing.com/'
+            },
+            timeout: 5000 // 5 second timeout
         });
 
         const $ = cheerio.load(response.data);
         const results = [];
         
+        // Bing's CSS classes can change, so we use multiple selectors
+        const selectors = ['.b_algo', 'li.b_algo', '.b_caption', '.b_snippet'];
+        
         $('.b_algo').each((i, el) => {
             if (i >= 5) return;
             const title = $(el).find('h2').text().trim();
             const link = $(el).find('a').attr('href');
-            // Try multiple snippet selectors
-            const snippet = $(el).find('.b_caption p').text().trim() || 
-                           $(el).find('.b_snippet').text().trim() ||
-                           $(el).find('p').text().trim();
+            
+            // Comprehensive snippet extraction
+            let snippet = '';
+            const snippetEl = $(el).find('.b_caption p, .b_snippet, .b_lineclamp2, .b_lineclamp3, p');
+            if (snippetEl.length > 0) {
+                snippet = snippetEl.first().text().trim();
+            }
             
             if (title && link) {
                 results.push({ title, url: link, description: snippet });
             }
         });
         
+        // Fallback for different Bing layout
+        if (results.length === 0) {
+            $('li').each((i, el) => {
+                if (i >= 5) return;
+                const title = $(el).find('h2').text().trim();
+                const link = $(el).find('a').attr('href');
+                if (title && link && link.startsWith('http')) {
+                    results.push({ title, url: link, description: '' });
+                }
+            });
+        }
+        
+        console.log(`✅ Found ${results.length} results.`);
         return { results };
     } catch (e) {
         console.error('Search Error:', e.message);
@@ -186,7 +207,7 @@ const requestHandler = async (req, res) => {
                         if (searchResults && searchResults.results && searchResults.results.length > 0) {
                             // Take top 5 results
                             const topResults = searchResults.results.slice(0, 5).map(r => 
-                                `[Source: ${r.title}]\n(URL: ${r.url})\nContent: ${r.description}`
+                                `[Source: ${r.title}]\n(URL: ${r.url})\nContent: ${r.description || 'No description available'}`
                             ).join('\n\n');
 
                             // Inject into the prompt with STRICTER instructions
@@ -198,14 +219,14 @@ const requestHandler = async (req, res) => {
                                 timeZone: 'Asia/Jakarta'
                             });
                             
-                            const searchContext = `\n\n=== 🌍 LIVE SEARCH DATA (VERIFIED FACTS) ===\n[Date: ${currentDate}]\nHere is the real-time data I found for you. \n\n${topResults}\n\nINSTRUCTIONS FOR AI:\n1. Use the data above to answer specifically. \n2. Mention specific team names, scores, or times if available in the data.\n3. If the search results contain the answer, say it directly. Do NOT say "biasanya" or "mungkin".\n4. If the results mention specific matches happening today, LIST THEM.\n=======================================\n`;
+                            const searchContext = `\n\n=== 🌍 LIVE SEARCH DATA (VERIFIED FACTS) ===\n[Date: ${currentDate}]\nHere is the real-time data I found for you. \n\n${topResults}\n\nINSTRUCTIONS FOR AI:\n1. Use the data above to answer specifically. \n2. Mention specific team names, scores, or times if available in the data.\n3. If the search results contain the answer, say it directly. Do NOT say "biasanya" or "mungkin".\n4. If the results mention specific matches happening today, LIST THEM.\n5. IMPORTANT: Your reply MUST be based on the LIVE SEARCH DATA provided above.\n=======================================\n`;
                             
                             messages[messages.length - 1].content += searchContext;
                             console.log('✅ Search results injected into context.');
                         } else {
                             console.log('⚠️ Search returned no results.');
                             // Fallback: Inform the AI that search was attempted but failed
-                            messages[messages.length - 1].content += `\n\n[System Note: Research Mode was active, but no relevant search results were found for this query. If the user asked for current events, apologize and mention you couldn't find live data.]`;
+                            messages[messages.length - 1].content += `\n\n[System Note: Research Mode was active, but no relevant search results were found for this query. Today is ${currentDate}. If the user asked for current events, apologize and mention you couldn't find live data.]`;
                         }
                     } catch (err) {
                         console.error('⚠️ Search failed:', err.message);
