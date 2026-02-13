@@ -3,9 +3,17 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const { truncateMessagesToTokenLimit, countMessagesTokens } = require('./tokenizer_helper');
+// max tokens to send to model (env override)
+const MAX_MODEL_TOKENS = parseInt(process.env.MAX_MODEL_TOKENS || '2048', 10);
+
 
 // Use process.env.PORT for deployment (Heroku/Render/Railway) or fallback to 3030 locally
 const PORT = process.env.PORT || 3030;
+// Hugging Face Router settings (session-only): set HF_TOKEN in your environment to enable
+const HF_TOKEN = process.env.HF_TOKEN || process.env.HF_API_KEY || null;
+const HF_MODEL = process.env.HF_MODEL || 'meta-llama/Llama-3.1-8B-Instruct:novita';
+
 
 // --- HELPER: SEARCH WEB (BING) ---
 async function searchWeb(query) {
@@ -125,7 +133,7 @@ const requestHandler = async (req, res) => {
         req.on('end', async () => {
             try {
                 // Expect an array of messages now
-                let { messages, researchMode } = JSON.parse(body);
+                let { messages } = JSON.parse(body);
 
                 // --- ADVANCED PII SAFETY FILTER (COMPREHENSIVE) ---
                 // We only need to filter the LAST message from the user
@@ -245,7 +253,7 @@ const requestHandler = async (req, res) => {
                 const systemPrompt = {
                     role: 'system',
                     content: `You are Komodoc — a privacy‑first AI assistant with REAL‑TIME INTERNET ACCESS.
-- When researchMode is active, use injected live search data to answer and always cite sources (title + URL).
+
 - Never state that you lack internet access; instead, say you have real‑time access when relevant.
 - Respect privacy: backend redacts PII. If user input appears sensitive or incomplete, ask a clarifying question instead of guessing.
 - On external API failure, acknowledge the issue and provide a best‑effort internal summary or next steps.
@@ -262,35 +270,91 @@ const requestHandler = async (req, res) => {
                     messages[sysIdx].content += ` (Today is ${currentDate})`;
                 }
 
-                const response = await fetch('https://text.pollinations.ai/', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-                    },
-                    body: JSON.stringify({
-                        messages: messages, // Send the full history
-                        model: 'mistral'
-                    })
-                });
-
-                // Capture body for better diagnostics
-                const respText = await response.text().catch(() => '<no-body>');
-                if (!response.ok) {
-                    console.error('Pollinations API failed:', response.status, response.statusText, '\nBody:', respText);
-                    throw new Error(`API Error: ${response.status} ${response.statusText || '<no-statusText>'}`);
-                }
-
-                const text = respText; // use captured body
-                // Try to parse JSON if it comes as JSON, otherwise use text
-                let reply = text;
+                // Ensure message history fits within token budget (approximate)
+                // Truncate older messages if needed, keeping system prompt and recent messages
                 try {
-                    const json = JSON.parse(text);
-                    if (json.choices && json.choices[0]) {
-                        reply = json.choices[0].message.content;
+                    const beforeTokens = countMessagesTokens(messages);
+                    if (beforeTokens > MAX_MODEL_TOKENS) {
+                        messages = truncateMessagesToTokenLimit(messages, MAX_MODEL_TOKENS);
+                        console.log(`⚠️ Truncated messages: ${beforeTokens} → ${countMessagesTokens(messages)} tokens`);
                     }
                 } catch (e) {
-                    // plain text
+                    console.warn('Token truncation failed, continuing without truncation:', e.message);
+                }
+
+                // 1) Try Hugging Face Router (OpenAI-compatible chat endpoint) if HF_TOKEN is set
+                let reply = null;
+
+                if (HF_TOKEN) {
+                    try {
+                        const hfRes = await fetch('https://router.huggingface.co/v1/chat/completions', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${HF_TOKEN}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ model: HF_MODEL, messages })
+                        });
+
+                        const hfText = await hfRes.text().catch(() => '<no-body>');
+                        if (!hfRes.ok) {
+                            console.error('Hugging Face Router failed:', hfRes.status, hfRes.statusText, '\nBody:', hfText);
+                            throw new Error(`HF Router Error: ${hfRes.status}`);
+                        }
+
+                        try {
+                            const hfJson = JSON.parse(hfText);
+                            if (hfJson.choices && hfJson.choices[0] && hfJson.choices[0].message) {
+                                reply = hfJson.choices[0].message.content;
+                            } else if (hfJson.output && Array.isArray(hfJson.output) && hfJson.output[0].content) {
+                                // alternate HF router structure
+                                const out = hfJson.output[0].content;
+                                reply = typeof out === 'string' ? out : out[0]?.text || JSON.stringify(out);
+                            } else {
+                                reply = typeof hfJson === 'string' ? hfJson : JSON.stringify(hfJson);
+                            }
+                        } catch (e) {
+                            reply = hfText; // plain text fallback
+                        }
+
+                        console.log('✅ Response provided by Hugging Face Router');
+                    } catch (err) {
+                        console.error('⚠️ Hugging Face Router call failed — will fallback to Pollinations:', err.message);
+                        reply = null; // force fallback
+                    }
+                }
+
+                // 2) Fallback to Pollinations (original behaviour)
+                if (!reply) {
+                    const response = await fetch('https://text.pollinations.ai/', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                        },
+                        body: JSON.stringify({
+                            messages: messages, // Send the full history
+                            model: 'mistral'
+                        })
+                    });
+
+                    const respText = await response.text().catch(() => '<no-body>');
+                    if (!response.ok) {
+                        console.error('Pollinations API failed:', response.status, response.statusText, '\nBody:', respText);
+                        throw new Error(`API Error: ${response.status} ${response.statusText || '<no-statusText>'}`);
+                    }
+
+                    const text = respText; // use captured body
+                    try {
+                        const json = JSON.parse(text);
+                        if (json.choices && json.choices[0]) {
+                            reply = json.choices[0].message.content;
+                        } else {
+                            reply = text;
+                        }
+                    } catch (e) {
+                        reply = text;
+                    }
                 }
 
                 res.writeHead(200, { 'Content-Type': 'application/json' });

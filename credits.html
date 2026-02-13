@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Komodoc — Sources & Licenses</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <main style="max-width:800px;margin:40px auto;font-family:Inter,Segoe UI,Arial,sans-serif;color:#222;">
+      <h1>Sources &amp; Licenses</h1>
+      <p>This project links to and may call inference services and open‑source models. Below are the main sources and brief license notes — check each provider for full terms.</p>
+
+      <h2>Models &amp; Providers</h2>
+      <ul>
+        <li><strong>LLaMA (Meta)</strong> — model family from Meta AI. See official page: <a href="https://ai.meta.com/llama" target="_blank">ai.meta.com/llama</a>. Check the model license and usage restrictions per release.</li>
+        <li><strong>Hugging Face</strong> — model hosting & inference API. API keys & quotas required for hosted inference. Docs: <a href="https://huggingface.co/docs" target="_blank">huggingface.co/docs</a>.</li>
+        <li><strong>Pollinations.ai</strong> — used as a fallback inference endpoint in this project. Availability may vary (Cloudflare tunnel used by provider).</li>
+      </ul>
+
+      <h2>Privacy & Data</h2>
+      <p>The application is a client for third‑party inference APIs. Do not send sensitive PII or secrets to the service unless you understand the provider's data handling and retention policy.</p>
+
+      <h2>Licence pointers</h2>
+      <ul>
+        <li>Open‑source models may have specific licenses (MIT, Apache‑2.0, custom). Always review the license for the exact model you use.</li>
+        <li>Hosted provider APIs (Hugging Face, Pollinations, etc.) have separate Terms of Service — check for commercial restrictions.</li>
+      </ul>
+
+      <h2>Where to get API keys</h2>
+      <ul>
+        <li>Hugging Face: create an account and get an access token at <a href="https://huggingface.co/settings/tokens" target="_blank">huggingface.co/settings/tokens</a>.</li>
+        <li>Other providers: follow their docs (links above).</li>
+      </ul>
+
+      <p style="margin-top:30px;"><a href="index.html" style="color:#00ffcc;text-decoration:none">&#8592; Back to Komodoc</a></p>
+
+      <hr>
+      <small style="color:#666">This page is informational only. Verify model licenses & provider terms before using in production.</small>
+    </main>
+  </body>
+</html>

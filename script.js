@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendButton = document.getElementById('send-button');
     const userInput = document.getElementById('user-input');
     const chatMessages = document.getElementById('chat-messages');
-    const researchToggle = document.getElementById('research-toggle');
+
 
     // Store conversation history
     let conversationHistory = [
@@ -43,8 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add loading indicator
         const loadingDiv = document.createElement('div');
         loadingDiv.classList.add('message', 'system');
-        const isResearching = researchToggle.checked;
-        loadingDiv.textContent = isResearching ? 'Komodoc is researching online...' : 'Komodoc thinking...';
+        loadingDiv.textContent = 'Komodoc thinking...';
         chatMessages.appendChild(loadingDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -56,8 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ 
-                    messages: conversationHistory,
-                    researchMode: isResearching 
+                    messages: conversationHistory
                 })
             });
             
