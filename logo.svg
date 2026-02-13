@@ -1,19 +1,29 @@
 <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Rounded Square Background -->
   <rect width="200" height="200" rx="40" fill="#1A1A1A"/>
   
-  <!-- Foundation -->
-  <rect x="40" y="150" width="120" height="15" rx="2" fill="#334155"/>
-  <rect x="55" y="130" width="90" height="15" rx="2" fill="#475569"/>
+  <!-- Stylized "K" as Building Structure -->
+  <!-- Main Vertical Beam -->
+  <rect x="60" y="40" width="15" height="120" rx="2" fill="#00FFCC"/>
   
-  <!-- K-Structure Tower -->
-  <path d="M75 50V120M75 85L110 50M75 85L110 120" stroke="#00FFCC" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Upper Diagonal Beam -->
+  <path d="M75 100L130 45" stroke="#00FFCC" stroke-width="15" stroke-linecap="round"/>
   
-  <!-- Construction Crane -->
-  <path d="M110 35H155M155 35V60" stroke="#00FFCC" stroke-width="5" stroke-linecap="round"/>
-  <rect x="148" y="60" width="14" height="14" rx="2" fill="#22D3EE">
-    <animate attributeName="fill-opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite" />
-  </rect>
+  <!-- Lower Diagonal Beam -->
+  <path d="M75 100L130 155" stroke="#00FFCC" stroke-width="15" stroke-linecap="round"/>
   
-  <!-- Grid Details -->
-  <path d="M40 175H160" stroke="#00FFCC" stroke-width="1" stroke-opacity="0.2"/>
+  <!-- Construction Details (Rivets/Joints) -->
+  <circle cx="67.5" cy="55" r="3" fill="#1A1A1A"/>
+  <circle cx="67.5" cy="145" r="3" fill="#1A1A1A"/>
+  <circle cx="75" cy="100" r="5" fill="#22D3EE"/>
+  
+  <!-- Architectural Grid Overlay (Subtle) -->
+  <path d="M40 70H160M40 100H160M40 130H160" stroke="#00FFCC" stroke-width="1" stroke-opacity="0.1"/>
+  <path d="M85 40V160M115 40V160" stroke="#00FFCC" stroke-width="1" stroke-opacity="0.1"/>
+  
+  <!-- Glow Effect on the Center Joint -->
+  <circle cx="75" cy="100" r="10" stroke="#00FFCC" stroke-opacity="0.3" stroke-width="2">
+    <animate attributeName="r" values="8;12;8" dur="2s" repeatCount="indefinite" />
+    <animate attributeName="stroke-opacity" values="0.5;0;0.5" dur="2s" repeatCount="indefinite" />
+  </circle>
 </svg>
