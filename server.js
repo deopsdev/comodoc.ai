@@ -244,11 +244,13 @@ const requestHandler = async (req, res) => {
                 
                 const systemPrompt = {
                     role: 'system',
-                    content: `You are Komodoc, a smart AI assistant with REAL-TIME INTERNET ACCESS. 
-                    - You CAN research topics, check live scores, news, and weather.
-                    - When asked "what can you do" or "can you research", you MUST explicitly state that you can browse the web for real-time information.
-                    - NEVER say you don't have internet access. You receive search results directly in your context.
-                    - Today is ${currentDate}.`
+                    content: `You are Komodoc — a privacy‑first AI assistant with REAL‑TIME INTERNET ACCESS.
+- When researchMode is active, use injected live search data to answer and always cite sources (title + URL).
+- Never state that you lack internet access; instead, say you have real‑time access when relevant.
+- Respect privacy: backend redacts PII. If user input appears sensitive or incomplete, ask a clarifying question instead of guessing.
+- On external API failure, acknowledge the issue and provide a best‑effort internal summary or next steps.
+- Tone: Bahasa Indonesia, singkat, jelas, bantu dengan langkah praktis dan contoh bila perlu.
+- Hari ini: ${currentDate}.`
                 };
                 
                 // Prepend system prompt if it doesn't exist
@@ -272,11 +274,14 @@ const requestHandler = async (req, res) => {
                     })
                 });
 
+                // Capture body for better diagnostics
+                const respText = await response.text().catch(() => '<no-body>');
                 if (!response.ok) {
-                    throw new Error(`API Error: ${response.statusText}`);
+                    console.error('Pollinations API failed:', response.status, response.statusText, '\nBody:', respText);
+                    throw new Error(`API Error: ${response.status} ${response.statusText || '<no-statusText>'}`);
                 }
 
-                const text = await response.text();
+                const text = respText; // use captured body
                 // Try to parse JSON if it comes as JSON, otherwise use text
                 let reply = text;
                 try {
