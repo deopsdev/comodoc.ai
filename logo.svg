@@ -1,23 +1,19 @@
 <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background Circle (Dark Industrial) -->
-  <circle cx="100" cy="100" r="95" fill="#1A1A1A" />
+  <rect width="200" height="200" rx="40" fill="#1A1A1A"/>
   
-  <!-- Foundation / Building Blocks -->
-  <rect x="40" y="140" width="120" height="20" rx="2" fill="#334155" />
-  <rect x="50" y="115" width="100" height="20" rx="2" fill="#475569" />
+  <!-- Foundation -->
+  <rect x="40" y="150" width="120" height="15" rx="2" fill="#334155"/>
+  <rect x="55" y="130" width="90" height="15" rx="2" fill="#475569"/>
   
-  <!-- Main Tower (Stylized as a "K" structure) -->
-  <path d="M70 60V110M70 85L100 60M70 85L100 110" stroke="#00FFCC" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- K-Structure Tower -->
+  <path d="M75 50V120M75 85L110 50M75 85L110 120" stroke="#00FFCC" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
   
-  <!-- Crane / Construction Element -->
-  <path d="M100 40H150M150 40V60" stroke="#00FFCC" stroke-width="4" stroke-linecap="round" />
-  <rect x="145" y="60" width="10" height="10" fill="#22D3EE">
-    <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite" />
+  <!-- Construction Crane -->
+  <path d="M110 35H155M155 35V60" stroke="#00FFCC" stroke-width="5" stroke-linecap="round"/>
+  <rect x="148" y="60" width="14" height="14" rx="2" fill="#22D3EE">
+    <animate attributeName="fill-opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite" />
   </rect>
-
-  <!-- Digital Grid / Foundation Lines -->
-  <path d="M40 160H160M60 175H140M80 190H120" stroke="#00FFCC" stroke-width="1" stroke-opacity="0.3" />
-
-  <!-- The "Building" Komodo Element (Abstract Tail) -->
-  <path d="M40 140C40 140 30 100 50 80" stroke="#00FFCC" stroke-width="4" stroke-dasharray="4 4" />
+  
+  <!-- Grid Details -->
+  <path d="M40 175H160" stroke="#00FFCC" stroke-width="1" stroke-opacity="0.2"/>
 </svg>
