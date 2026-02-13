@@ -10,7 +10,28 @@ function approxTokenCount(text) {
 function countMessageTokens(message) {
   // account for role + content overhead
   const roleOverhead = 3; // small fixed overhead per message
-  return roleOverhead + approxTokenCount(message.content || '');
+
+  const content = message.content;
+  if (!content) return roleOverhead;
+
+  // If content is an array (multimodal), count text parts and small cost for media
+  if (Array.isArray(content)) {
+    let total = roleOverhead;
+    for (const part of content) {
+      if (!part) continue;
+      if (part.type === 'text' && typeof part.text === 'string') {
+        total += approxTokenCount(part.text);
+      } else if (part.type === 'image_url' || part.type === 'audio' || part.type === 'image') {
+        total += 3; // small fixed cost for non-text multimodal parts
+      } else if (typeof part === 'string') {
+        total += approxTokenCount(part);
+      }
+    }
+    return total;
+  }
+
+  // fallback: content is string
+  return roleOverhead + approxTokenCount(String(content));
 }
 
 function countMessagesTokens(messages) {

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test:hf-router": "node test_hf_router.js"
+    "test:hf-router": "node test_hf_router.js",
+    "test:hf-multimodal": "node test_hf_multimodal.js"
   },
   "keywords": [
     "ai",

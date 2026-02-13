@@ -133,7 +133,7 @@ const requestHandler = async (req, res) => {
         req.on('end', async () => {
             try {
                 // Expect an array of messages now
-                let { messages } = JSON.parse(body);
+                let { messages, researchMode } = JSON.parse(body);
 
                 // --- ADVANCED PII SAFETY FILTER (COMPREHENSIVE) ---
                 // We only need to filter the LAST message from the user
@@ -142,47 +142,52 @@ const requestHandler = async (req, res) => {
                     const lastMsg = messages[lastMsgIndex];
 
                     if (lastMsg.role === 'user') {
-                        let message = lastMsg.content;
-                        const originalMessage = message;
+                        // Support both string and multimodal (array) user content
+                        if (typeof lastMsg.content === 'string') {
+                            let message = lastMsg.content;
+                            const originalMessage = message;
 
-                        // A. Direct Identifiers
-                        // 1. Email Addresses
-                        message = message.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL_REDACTED]');
-                        
-                        // 2. Phone Numbers (Indonesian & International formats)
-                        // Covers: +62, 08xx, (xxx) xxx-xxxx
-                        message = message.replace(/\b(\+62|08|62)\d{8,15}\b/g, '[PHONE_REDACTED]');
-                        message = message.replace(/\b\d{3}[- .]?\d{3}[- .]?\d{4}\b/g, '[PHONE_REDACTED]');
+                            // A. Direct Identifiers
+                            message = message.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL_REDACTED]');
+                            message = message.replace(/\b(\+62|08|62)\d{8,15}\b/g, '[PHONE_REDACTED]');
+                            message = message.replace(/\b\d{3}[- .]?\d{3}[- .]?\d{4}\b/g, '[PHONE_REDACTED]');
+                            message = message.replace(/\b\d{16}\b/g, '[ID_NUM_REDACTED]');
+                            message = message.replace(/\b(?:\d{4}[- ]?){3}\d{4}\b/g, '[CREDIT_CARD_REDACTED]');
+                            message = message.replace(/\b\d{1,2}[-/]\d{1,2}[-/]\d{4}\b/g, '[DATE_REDACTED]');
+                            message = message.replace(/\b\d{4}[-/]\d{1,2}[-/]\d{1,2}\b/g, '[DATE_REDACTED]');
+                            message = message.replace(/\b(?:Zip|Code|Pos)\s*:?\s*(\d{5})\b/gi, 'ZIP [REDACTED]');
 
-                        // 3. Identification Numbers (NIK/KTP, Passport, Driver's License - Generic 16 digits)
-                        message = message.replace(/\b\d{16}\b/g, '[ID_NUM_REDACTED]');
-                        
-                        // B. Sensitive PII (Financial)
-                        // 1. Credit Card Numbers (Visa, Mastercard, etc. - 13-19 digits, often grouped)
-                        message = message.replace(/\b(?:\d{4}[- ]?){3}\d{4}\b/g, '[CREDIT_CARD_REDACTED]');
+                            if (message !== originalMessage) {
+                                console.log('🛡️ Security: PII data redacted from user message.');
+                            }
+                            messages[lastMsgIndex].content = message;
 
-                        // C. Indirect Identifiers (Dates & Locations)
-                        // 1. Dates of Birth (Formats: DD-MM-YYYY, YYYY-MM-DD, DD/MM/YYYY)
-                        // Simple regex to catch common date patterns
-                        message = message.replace(/\b\d{1,2}[-/]\d{1,2}[-/]\d{4}\b/g, '[DATE_REDACTED]');
-                        message = message.replace(/\b\d{4}[-/]\d{1,2}[-/]\d{1,2}\b/g, '[DATE_REDACTED]');
-
-                        // 2. ZIP Codes (5 digits) - Context aware is hard, but we can catch 5 digit isolated numbers
-                        // NOTE: This might be too aggressive for general numbers, so we limit to specific patterns if needed.
-                        // For now, we'll assume 5 digit numbers at the end of a string or after "Zip" might be sensitive.
-                        message = message.replace(/\b(?:Zip|Code|Pos)\s*:?\s*(\d{5})\b/gi, 'ZIP [REDACTED]');
-
-                        if (message !== originalMessage) {
-                            console.log('🛡️ Security: PII data redacted from user message.');
+                        } else if (Array.isArray(lastMsg.content)) {
+                            // iterate parts and redact text parts only
+                            const parts = lastMsg.content.map(part => {
+                                if (!part) return part;
+                                if (part.type === 'text' && typeof part.text === 'string') {
+                                    let txt = part.text;
+                                    const orig = txt;
+                                    txt = txt.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL_REDACTED]');
+                                    txt = txt.replace(/\b(\+62|08|62)\d{8,15}\b/g, '[PHONE_REDACTED]');
+                                    txt = txt.replace(/\b\d{3}[- .]?\d{3}[- .]?\d{4}\b/g, '[PHONE_REDACTED]');
+                                    txt = txt.replace(/\b\d{16}\b/g, '[ID_NUM_REDACTED]');
+                                    txt = txt.replace(/\b(?:\d{4}[- ]?){3}\d{4}\b/g, '[CREDIT_CARD_REDACTED]');
+                                    txt = txt.replace(/\b\d{1,2}[-/]\d{1,2}[-/]\d{4}\b/g, '[DATE_REDACTED]');
+                                    txt = txt.replace(/\b\d{4}[-/]\d{1,2}[-/]\d{1,2}\b/g, '[DATE_REDACTED]');
+                                    txt = txt.replace(/\b(?:Zip|Code|Pos)\s*:?\s*(\d{5})\b/gi, 'ZIP [REDACTED]');
+                                    if (txt !== orig) console.log('🛡️ Security: PII data redacted from text part of multimodal message.');
+                                    return { ...part, text: txt };
+                                }
+                                return part;
+                            });
+                            messages[lastMsgIndex].content = parts;
                         }
-                        
-                        // Update the content in the array
-                        messages[lastMsgIndex].content = message;
                     }
                 }
                 
                 // --- NEW: WEB SEARCH CAPABILITY (RESEARCH) ---
-                // Detect if user needs up-to-date info and search DuckDuckGo
                 const lastMsgContent = messages[messages.length - 1].content;
                 // Only perform search if researchMode is enabled by the user
                 const needsSearch = researchMode === true;
@@ -197,7 +202,7 @@ const requestHandler = async (req, res) => {
                         let searchQuery = lastMsgContent;
                         
                         // Add context boosters based on keywords
-                        const lowerMsg = lastMsgContent.toLowerCase();
+                        const lowerMsg = (typeof lastMsgContent === 'string' ? lastMsgContent : '').toLowerCase();
                         if (lowerMsg.includes('bola') || lowerMsg.includes('pertandingan') || lowerMsg.includes('jadwal') || lowerMsg.includes('skor')) {
                             searchQuery = `${lastMsgContent} jadwal skor live terkini`;
                         } else if (lowerMsg.includes('cuaca')) {
@@ -237,9 +242,8 @@ const requestHandler = async (req, res) => {
                         }
                     }
                 }
-                // ---------------------------------------------------
 
-                // Call Pollinations AI with Mistral
+                // Call provider (Hugging Face Router) — Pollinations removed
                 
                 // Add System Prompt for Date Awareness (if not present)
                 const currentDate = new Date().toLocaleDateString('id-ID', { 
@@ -319,42 +323,17 @@ const requestHandler = async (req, res) => {
 
                         console.log('✅ Response provided by Hugging Face Router');
                     } catch (err) {
-                        console.error('⚠️ Hugging Face Router call failed — will fallback to Pollinations:', err.message);
+                        console.error('⚠️ Hugging Face Router call failed — no fallback available:', err.message);
                         reply = null; // force fallback
                     }
                 }
 
-                // 2) Fallback to Pollinations (original behaviour)
+                // If HF Router didn't provide a reply, fail fast — Pollinations removed
                 if (!reply) {
-                    const response = await fetch('https://text.pollinations.ai/', {
-                        method: 'POST',
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-                        },
-                        body: JSON.stringify({
-                            messages: messages, // Send the full history
-                            model: 'mistral'
-                        })
-                    });
-
-                    const respText = await response.text().catch(() => '<no-body>');
-                    if (!response.ok) {
-                        console.error('Pollinations API failed:', response.status, response.statusText, '\nBody:', respText);
-                        throw new Error(`API Error: ${response.status} ${response.statusText || '<no-statusText>'}`);
-                    }
-
-                    const text = respText; // use captured body
-                    try {
-                        const json = JSON.parse(text);
-                        if (json.choices && json.choices[0]) {
-                            reply = json.choices[0].message.content;
-                        } else {
-                            reply = text;
-                        }
-                    } catch (e) {
-                        reply = text;
-                    }
+                    console.error('No reply from Hugging Face Router and no fallback available.');
+                    res.writeHead(503, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'No provider available: set HF_TOKEN to enable Hugging Face Router.' }));
+                    return;
                 }
 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
