@@ -1,25 +1,23 @@
 <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Background Circle -->
-  <circle cx="100" cy="100" r="95" fill="#0F172A" />
+  <circle cx="100" cy="100" r="95" fill="#1A1A1A" />
   
-  <!-- Stylized Komodo Head -->
-  <path d="M60 140C60 140 50 110 70 80C90 50 130 40 150 60C170 80 150 110 130 115C110 120 90 145 60 140Z" fill="url(#paint0_linear)" />
+  <!-- Komodo Silhouette -->
+  <path d="M40 130C40 130 50 120 70 120C90 120 110 110 120 90C130 70 150 65 170 70C180 75 185 85 175 95C165 105 140 105 130 115C120 125 110 150 80 150C50 150 40 130 40 130Z" fill="url(#komodo_grad)" />
   
-  <!-- Eye (AI Core) -->
-  <circle cx="125" cy="75" r="8" fill="#22D3EE">
-    <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" />
-  </circle>
+  <!-- The Tongue (Iconic Komodo feature) -->
+  <path d="M180 85L195 80M180 85L195 90" stroke="#00FFCC" stroke-width="3" stroke-linecap="round" />
   
-  <!-- Tongue (Stylized) -->
-  <path d="M65 135C65 135 45 145 40 135" stroke="#22D3EE" stroke-width="4" stroke-linecap="round" />
+  <!-- AI Eye -->
+  <circle cx="155" cy="82" r="4" fill="#00FFCC" />
   
-  <!-- Digital Accents (Circuit Lines) -->
-  <path d="M100 50L110 40M140 90L155 100M80 70L70 60" stroke="#22D3EE" stroke-width="2" stroke-opacity="0.5" />
+  <!-- Circuit Pattern on Back -->
+  <path d="M85 125L95 115M105 120L115 110M70 130L80 120" stroke="#1A1A1A" stroke-width="2" stroke-opacity="0.5" />
 
   <defs>
-    <linearGradient id="paint0_linear" x1="60" y1="140" x2="150" y2="60" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0D9488" />
-      <stop offset="1" stop-color="#2DD4BF" />
+    <linearGradient id="komodo_grad" x1="40" y1="150" x2="175" y2="70" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#008F7A" />
+      <stop offset="1" stop-color="#00FFCC" />
     </linearGradient>
   </defs>
 </svg>
