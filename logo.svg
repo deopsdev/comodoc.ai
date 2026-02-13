@@ -1,23 +1,23 @@
 <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background Circle -->
+  <!-- Background Circle (Dark Industrial) -->
   <circle cx="100" cy="100" r="95" fill="#1A1A1A" />
   
-  <!-- Komodo Silhouette -->
-  <path d="M40 130C40 130 50 120 70 120C90 120 110 110 120 90C130 70 150 65 170 70C180 75 185 85 175 95C165 105 140 105 130 115C120 125 110 150 80 150C50 150 40 130 40 130Z" fill="url(#komodo_grad)" />
+  <!-- Foundation / Building Blocks -->
+  <rect x="40" y="140" width="120" height="20" rx="2" fill="#334155" />
+  <rect x="50" y="115" width="100" height="20" rx="2" fill="#475569" />
   
-  <!-- The Tongue (Iconic Komodo feature) -->
-  <path d="M180 85L195 80M180 85L195 90" stroke="#00FFCC" stroke-width="3" stroke-linecap="round" />
+  <!-- Main Tower (Stylized as a "K" structure) -->
+  <path d="M70 60V110M70 85L100 60M70 85L100 110" stroke="#00FFCC" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
   
-  <!-- AI Eye -->
-  <circle cx="155" cy="82" r="4" fill="#00FFCC" />
-  
-  <!-- Circuit Pattern on Back -->
-  <path d="M85 125L95 115M105 120L115 110M70 130L80 120" stroke="#1A1A1A" stroke-width="2" stroke-opacity="0.5" />
+  <!-- Crane / Construction Element -->
+  <path d="M100 40H150M150 40V60" stroke="#00FFCC" stroke-width="4" stroke-linecap="round" />
+  <rect x="145" y="60" width="10" height="10" fill="#22D3EE">
+    <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite" />
+  </rect>
 
-  <defs>
-    <linearGradient id="komodo_grad" x1="40" y1="150" x2="175" y2="70" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#008F7A" />
-      <stop offset="1" stop-color="#00FFCC" />
-    </linearGradient>
-  </defs>
+  <!-- Digital Grid / Foundation Lines -->
+  <path d="M40 160H160M60 175H140M80 190H120" stroke="#00FFCC" stroke-width="1" stroke-opacity="0.3" />
+
+  <!-- The "Building" Komodo Element (Abstract Tail) -->
+  <path d="M40 140C40 140 30 100 50 80" stroke="#00FFCC" stroke-width="4" stroke-dasharray="4 4" />
 </svg>
