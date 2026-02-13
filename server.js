@@ -34,7 +34,8 @@ async function searchWeb(query) {
             
             // Comprehensive snippet extraction
             let snippet = '';
-            const snippetEl = $(el).find('.b_caption p, .b_snippet, .b_lineclamp2, .b_lineclamp3, p');
+            // Added more common selectors for snippets
+            const snippetEl = $(el).find('.b_caption p, .b_snippet, .b_lineclamp2, .b_lineclamp3, .b_algoSlug, p');
             if (snippetEl.length > 0) {
                 snippet = snippetEl.first().text().trim();
             }
@@ -44,13 +45,13 @@ async function searchWeb(query) {
             }
         });
         
-        // Fallback for different Bing layout
+        // Fallback for different Bing layout (e.g. mobile or minimal)
         if (results.length === 0) {
-            $('li').each((i, el) => {
+            $('h2 a').each((i, el) => {
                 if (i >= 5) return;
-                const title = $(el).find('h2').text().trim();
-                const link = $(el).find('a').attr('href');
-                if (title && link && link.startsWith('http')) {
+                const title = $(el).text().trim();
+                const link = $(el).attr('href');
+                if (title && link && link.startsWith('http') && !link.includes('bing.com')) {
                     results.push({ title, url: link, description: '' });
                 }
             });
@@ -181,9 +182,6 @@ const requestHandler = async (req, res) => {
                 if (needsSearch) {
                     try {
                         // --- SMART QUERY OPTIMIZATION ---
-                        // Instead of searching raw user input, we optimize it for better results
-                        // e.g. "bola hari ini" -> "jadwal bola hari ini [current_date] scores"
-                        
                         const dateStr = new Date().toLocaleDateString('id-ID', { 
                             day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta'
                         });
@@ -193,44 +191,42 @@ const requestHandler = async (req, res) => {
                         // Add context boosters based on keywords
                         const lowerMsg = lastMsgContent.toLowerCase();
                         if (lowerMsg.includes('bola') || lowerMsg.includes('pertandingan') || lowerMsg.includes('jadwal') || lowerMsg.includes('skor')) {
-                            // For sports, generic "hari ini" often yields better live results than specific dates
-                            searchQuery = `jadwal bola hari ini live score terkini`;
+                            searchQuery = `${lastMsgContent} jadwal skor live terkini`;
                         } else if (lowerMsg.includes('cuaca')) {
-                            searchQuery = `prakiraan cuaca hari ini ${dateStr} bmkg`;
+                            searchQuery = `prakiraan cuaca ${lastMsgContent} hari ini bmkg`;
                         } else if (lowerMsg.includes('berita')) {
-                            searchQuery = `berita terkini hari ini indonesia`;
+                            searchQuery = `berita terkini ${lastMsgContent} indonesia hari ini`;
                         }
 
                         console.log(`🔍 Optimized Search Query: "${searchQuery}"`);
                         const searchResults = await searchWeb(searchQuery);
 
+                        let searchContext = '';
+                        const currentDate = new Date().toLocaleDateString('id-ID', { 
+                            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Jakarta'
+                        });
+
                         if (searchResults && searchResults.results && searchResults.results.length > 0) {
-                            // Take top 5 results
                             const topResults = searchResults.results.slice(0, 5).map(r => 
                                 `[Source: ${r.title}]\n(URL: ${r.url})\nContent: ${r.description || 'No description available'}`
                             ).join('\n\n');
 
-                            // Inject into the prompt with STRICTER instructions
-                            const currentDate = new Date().toLocaleDateString('id-ID', { 
-                                weekday: 'long', 
-                                year: 'numeric', 
-                                month: 'long', 
-                                day: 'numeric',
-                                timeZone: 'Asia/Jakarta'
-                            });
-                            
-                            const searchContext = `\n\n=== 🌍 LIVE SEARCH DATA (VERIFIED FACTS) ===\n[Date: ${currentDate}]\nHere is the real-time data I found for you. \n\n${topResults}\n\nINSTRUCTIONS FOR AI:\n1. Use the data above to answer specifically. \n2. Mention specific team names, scores, or times if available in the data.\n3. If the search results contain the answer, say it directly. Do NOT say "biasanya" or "mungkin".\n4. If the results mention specific matches happening today, LIST THEM.\n5. IMPORTANT: Your reply MUST be based on the LIVE SEARCH DATA provided above.\n=======================================\n`;
-                            
-                            messages[messages.length - 1].content += searchContext;
+                            searchContext = `\n\n=== 🌍 LIVE SEARCH DATA (VERIFIED FACTS) ===\n[Date: ${currentDate}]\nHere is the real-time data I found for you. \n\n${topResults}\n\nINSTRUCTIONS FOR AI:\n1. Use the data above to answer specifically. \n2. Mention specific team names, scores, or times if available in the data.\n3. If the search results contain the answer, say it directly. Do NOT say "biasanya" or "mungkin".\n4. If the results mention specific matches happening today, LIST THEM.\n5. IMPORTANT: Your reply MUST be based on the LIVE SEARCH DATA provided above.\n=======================================\n`;
                             console.log('✅ Search results injected into context.');
                         } else {
                             console.log('⚠️ Search returned no results.');
-                            // Fallback: Inform the AI that search was attempted but failed
-                            messages[messages.length - 1].content += `\n\n[System Note: Research Mode was active, but no relevant search results were found for this query. Today is ${currentDate}. If the user asked for current events, apologize and mention you couldn't find live data.]`;
+                            searchContext = `\n\n[System Note: Research Mode was active, but no relevant search results were found for this query. Today is ${currentDate}. Answer based on your internal knowledge but mention that live search yielded no results.]`;
+                        }
+                        
+                        // Ensure we don't break the message structure
+                        if (messages[messages.length - 1]) {
+                            messages[messages.length - 1].content += searchContext;
                         }
                     } catch (err) {
-                        console.error('⚠️ Search failed:', err.message);
-                         messages[messages.length - 1].content += `\n\n[System Note: Research Mode error: ${err.message}]`;
+                        console.error('⚠️ Search logic failed:', err.message);
+                        if (messages[messages.length - 1]) {
+                            messages[messages.length - 1].content += `\n\n[System Note: Research Mode error: ${err.message}]`;
+                        }
                     }
                 }
                 // ---------------------------------------------------
