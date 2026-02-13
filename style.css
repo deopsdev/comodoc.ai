@@ -24,32 +24,6 @@ header {
     margin-bottom: 20px;
 }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 10px;
-}
-
-.logo-img {
-    width: 60px;
-    height: 60px;
-    filter: drop-shadow(0 0 8px rgba(0, 255, 204, 0.3));
-}
-
-.logo-text {
-    font-size: 2em;
-    font-weight: bold;
-    color: #d4d4d4;
-    margin: 0;
-}
-
-.ai-text {
-    color: #00ffcc;
-    text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
-}
-
 h1 {
     color: #00ffcc; /* Cyan indicator light */
     letter-spacing: 2px;
