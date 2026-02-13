@@ -1,8 +1,6 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
-const cheerio = require('cheerio');
 const { truncateMessagesToTokenLimit, countMessagesTokens } = require('./tokenizer_helper');
 // max tokens to send to model (env override)
 const MAX_MODEL_TOKENS = parseInt(process.env.MAX_MODEL_TOKENS || '2048', 10);
@@ -10,68 +8,9 @@ const MAX_MODEL_TOKENS = parseInt(process.env.MAX_MODEL_TOKENS || '2048', 10);
 
 // Use process.env.PORT for deployment (Heroku/Render/Railway) or fallback to 3030 locally
 const PORT = process.env.PORT || 3030;
-// Hugging Face Router settings (session-only): set HF_TOKEN in your environment to enable
-const HF_TOKEN = process.env.HF_TOKEN || process.env.HF_API_KEY || null;
+// HF_MODEL: set HF_MODEL in your environment to override default
 const HF_MODEL = process.env.HF_MODEL || 'meta-llama/Llama-3.1-8B-Instruct:novita';
 
-
-// --- HELPER: SEARCH WEB (BING) ---
-async function searchWeb(query) {
-    try {
-        console.log('🔍 Searching Bing for:', query);
-        // Use a more robust search approach if needed, but Bing works if selectors are correct
-        const response = await axios.get(`https://www.bing.com/search?q=${encodeURIComponent(query)}&cc=ID`, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-                'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
-                'Referer': 'https://www.bing.com/'
-            },
-            timeout: 5000 // 5 second timeout
-        });
-
-        const $ = cheerio.load(response.data);
-        const results = [];
-        
-        // Bing's CSS classes can change, so we use multiple selectors
-        const selectors = ['.b_algo', 'li.b_algo', '.b_caption', '.b_snippet'];
-        
-        $('.b_algo').each((i, el) => {
-            if (i >= 5) return;
-            const title = $(el).find('h2').text().trim();
-            const link = $(el).find('a').attr('href');
-            
-            // Comprehensive snippet extraction
-            let snippet = '';
-            // Added more common selectors for snippets
-            const snippetEl = $(el).find('.b_caption p, .b_snippet, .b_lineclamp2, .b_lineclamp3, .b_algoSlug, p');
-            if (snippetEl.length > 0) {
-                snippet = snippetEl.first().text().trim();
-            }
-            
-            if (title && link) {
-                results.push({ title, url: link, description: snippet });
-            }
-        });
-        
-        // Fallback for different Bing layout (e.g. mobile or minimal)
-        if (results.length === 0) {
-            $('h2 a').each((i, el) => {
-                if (i >= 5) return;
-                const title = $(el).text().trim();
-                const link = $(el).attr('href');
-                if (title && link && link.startsWith('http') && !link.includes('bing.com')) {
-                    results.push({ title, url: link, description: '' });
-                }
-            });
-        }
-        
-        console.log(`✅ Found ${results.length} results.`);
-        return { results };
-    } catch (e) {
-        console.error('Search Error:', e.message);
-        return { results: [] };
-    }
-}
 
 const requestHandler = async (req, res) => {
     console.log(`${req.method} ${req.url}`);
@@ -133,7 +72,7 @@ const requestHandler = async (req, res) => {
         req.on('end', async () => {
             try {
                 // Expect an array of messages now
-                let { messages, researchMode } = JSON.parse(body);
+                let { messages } = JSON.parse(body);
 
                 // --- ADVANCED PII SAFETY FILTER (COMPREHENSIVE) ---
                 // We only need to filter the LAST message from the user
@@ -187,61 +126,6 @@ const requestHandler = async (req, res) => {
                     }
                 }
                 
-                // --- NEW: WEB SEARCH CAPABILITY (RESEARCH) ---
-                const lastMsgContent = messages[messages.length - 1].content;
-                // Only perform search if researchMode is enabled by the user
-                const needsSearch = researchMode === true;
-
-                if (needsSearch) {
-                    try {
-                        // --- SMART QUERY OPTIMIZATION ---
-                        const dateStr = new Date().toLocaleDateString('id-ID', { 
-                            day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta'
-                        });
-
-                        let searchQuery = lastMsgContent;
-                        
-                        // Add context boosters based on keywords
-                        const lowerMsg = (typeof lastMsgContent === 'string' ? lastMsgContent : '').toLowerCase();
-                        if (lowerMsg.includes('bola') || lowerMsg.includes('pertandingan') || lowerMsg.includes('jadwal') || lowerMsg.includes('skor')) {
-                            searchQuery = `${lastMsgContent} jadwal skor live terkini`;
-                        } else if (lowerMsg.includes('cuaca')) {
-                            searchQuery = `prakiraan cuaca ${lastMsgContent} hari ini bmkg`;
-                        } else if (lowerMsg.includes('berita')) {
-                            searchQuery = `berita terkini ${lastMsgContent} indonesia hari ini`;
-                        }
-
-                        console.log(`🔍 Optimized Search Query: "${searchQuery}"`);
-                        const searchResults = await searchWeb(searchQuery);
-
-                        let searchContext = '';
-                        const currentDate = new Date().toLocaleDateString('id-ID', { 
-                            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Jakarta'
-                        });
-
-                        if (searchResults && searchResults.results && searchResults.results.length > 0) {
-                            const topResults = searchResults.results.slice(0, 5).map(r => 
-                                `[Source: ${r.title}]\n(URL: ${r.url})\nContent: ${r.description || 'No description available'}`
-                            ).join('\n\n');
-
-                            searchContext = `\n\n=== 🌍 LIVE SEARCH DATA (VERIFIED FACTS) ===\n[Date: ${currentDate}]\nHere is the real-time data I found for you. \n\n${topResults}\n\nINSTRUCTIONS FOR AI:\n1. Use the data above to answer specifically. \n2. Mention specific team names, scores, or times if available in the data.\n3. If the search results contain the answer, say it directly. Do NOT say "biasanya" or "mungkin".\n4. If the results mention specific matches happening today, LIST THEM.\n5. IMPORTANT: Your reply MUST be based on the LIVE SEARCH DATA provided above.\n=======================================\n`;
-                            console.log('✅ Search results injected into context.');
-                        } else {
-                            console.log('⚠️ Search returned no results.');
-                            searchContext = `\n\n[System Note: Research Mode was active, but no relevant search results were found for this query. Today is ${currentDate}. Answer based on your internal knowledge but mention that live search yielded no results.]`;
-                        }
-                        
-                        // Ensure we don't break the message structure
-                        if (messages[messages.length - 1]) {
-                            messages[messages.length - 1].content += searchContext;
-                        }
-                    } catch (err) {
-                        console.error('⚠️ Search logic failed:', err.message);
-                        if (messages[messages.length - 1]) {
-                            messages[messages.length - 1].content += `\n\n[System Note: Research Mode error: ${err.message}]`;
-                        }
-                    }
-                }
 
                 // Call provider (Hugging Face Router) — Pollinations removed
                 
@@ -256,11 +140,9 @@ const requestHandler = async (req, res) => {
                 
                 const systemPrompt = {
                     role: 'system',
-                    content: `You are Komodoc — a privacy‑first AI assistant with REAL‑TIME INTERNET ACCESS.
+                    content: `You are Komodoc — a privacy‑first AI assistant.
 
-- Never state that you lack internet access; instead, say you have real‑time access when relevant.
 - Respect privacy: backend redacts PII. If user input appears sensitive or incomplete, ask a clarifying question instead of guessing.
-- On external API failure, acknowledge the issue and provide a best‑effort internal summary or next steps.
 - Tone: Bahasa Indonesia, singkat, jelas, bantu dengan langkah praktis dan contoh bila perlu.
 - Hari ini: ${currentDate}.`
                 };
