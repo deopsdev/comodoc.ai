@@ -17,11 +17,8 @@
   ],
   "author": "Deops Dev (https://deopsdev.github.io)",
   "license": "ISC",
-  "dependencies": {
-    "axios": "^1.13.5",
-    "cheerio": "^1.2.0"
-  },
+  "dependencies": {},
   "engines": {
-    "node": ">=18.0.0"
+    "node": "20.x"
   }
 }

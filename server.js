@@ -9,6 +9,7 @@ const MAX_MODEL_TOKENS = parseInt(process.env.MAX_MODEL_TOKENS || '2048', 10);
 // Use process.env.PORT for deployment (Heroku/Render/Railway) or fallback to 3030 locally
 const PORT = process.env.PORT || 3030;
 // HF_MODEL: set HF_MODEL in your environment to override default
+const HF_TOKEN = process.env.HF_TOKEN || process.env.HF_API_KEY || null;
 const HF_MODEL = process.env.HF_MODEL || 'meta-llama/Llama-3.1-8B-Instruct:novita';
 
 
@@ -213,8 +214,12 @@ const requestHandler = async (req, res) => {
                 // If HF Router didn't provide a reply, fail fast — Pollinations removed
                 if (!reply) {
                     console.error('No reply from Hugging Face Router and no fallback available.');
+                    const errorMessage = HF_TOKEN 
+                        ? 'Gagal mendapatkan respon dari Hugging Face. Silakan periksa apakah Token Anda valid atau kuota API tersedia.' 
+                        : 'HF_TOKEN tidak ditemukan. Silakan atur Environment Variable HF_TOKEN di sistem atau dashboard Vercel Anda.';
+                    
                     res.writeHead(503, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ error: 'No provider available: set HF_TOKEN to enable Hugging Face Router.' }));
+                    res.end(JSON.stringify({ error: errorMessage }));
                     return;
                 }
 
