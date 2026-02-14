@@ -1,5 +1,5 @@
 /**
- * server.js - Backend utama untuk aplikasi Komodoc AI.
+ * server.js - Backend utama untuk aplikasi Komo AI.
  * File ini berfungsi sebagai server yang menerima pesan dari pengguna,
  * membersihkan data sensitif (privasi), dan berkomunikasi dengan kecerdasan buatan (AI).
  */
@@ -280,7 +280,7 @@ const server = http.createServer(requestHandler);
 if (require.main === module) {
     server.listen(PORT, () => {
         // Menampilkan pesan sukses di terminal bahwa server sudah aktif
-        console.log(`🚀 Komodoc AI Server running at http://localhost:${PORT}`);
+        console.log(`🚀 Komo AI Server running at http://localhost:${PORT}`);
     });
 }
 
