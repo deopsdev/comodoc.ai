@@ -2,6 +2,7 @@ body {
     font-family: 'Consolas', 'Monaco', 'Courier New', monospace; 
     margin: 0;
     padding: 20px;
+    padding-top: 120px;
     display: flex; 
     flex-direction: column; 
     height: 100vh; 
@@ -18,7 +19,13 @@ header {
     text-align: center; 
     border-bottom: 1px solid #333; 
     padding-bottom: 12px;
-    margin-bottom: 16px;
+    margin-bottom: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #1e1e1e;
+    z-index: 20;
 }
 
 h1 {
@@ -54,7 +61,7 @@ header p {
     display: flex;
     flex-direction: column; 
     background: transparent;
-    padding-bottom: 64px;
+    padding-bottom: 140px;
     width: 100%;
     box-sizing: border-box;
 }
@@ -116,13 +123,15 @@ header p {
     padding: 8px 10px;
     border: 1px solid #333;
     border-radius: 4px;
-    margin-top: 10px;
-    width: 100%;
+    margin-top: 0;
+    width: auto;
     flex-wrap: nowrap;
-    position: sticky;
-    bottom: 0;
+    position: fixed;
+    bottom: 40px;
+    left: 20px;
+    right: 20px;
     z-index: 10;
-    padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 6px;
     box-sizing: border-box;
 }
 
@@ -201,7 +210,13 @@ footer {
     padding: 8px;
     font-size: 0.8em;
     color: #555;
-    margin-top: 12px;
+    margin-top: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #1e1e1e;
+    z-index: 9;
 }
 @media (max-width: 768px) {
     body {
