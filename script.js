@@ -5,7 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatMessages = document.getElementById('chat-messages'); 
 
     let conversationHistory = [
-        { role: 'system', content: 'You are Komo, a helpful, friendly, and secure AI assistant.' }
+        { role: 'system', content: [
+            'You are Komo — a privacy-first multilingual AI assistant.',
+            'Respond in the user’s language by default; detect it automatically.',
+            'When the user requests translation, translate faithfully into the requested target language.',
+            'Preserve meaning, tone, names, numbers, units, and code blocks.',
+            'Keep original formatting and line breaks; avoid extra commentary unless asked.',
+            'For non‑Latin scripts, include romanization when helpful.'
+        ].join('\\n') }
     ];
 
     function addMessage(text, sender) {
