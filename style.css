@@ -292,13 +292,22 @@ footer a {
     color: var(--accent-komo);
     text-decoration: none;
 }
-footer a:hover {
+footer a:hover:not(.credits) {
     color: var(--accent-komo);
     text-decoration: underline; 
 }
 
 .credits {
     color: var(--accent-komo);
+}
+
+/* Non-underline untuk link Credits di semua state */
+.credits:link,
+.credits:visited,
+.credits:hover,
+.credits:focus,
+.credits:active {
+    text-decoration: none;
 }
 
 footer a:link,
