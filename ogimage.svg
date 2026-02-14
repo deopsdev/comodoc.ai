@@ -15,7 +15,7 @@
   <rect x="150" y="140" width="900" height="2" fill="#333333"/>
 
   <!-- Chat container -->
-  <rect x="150" y="160" width="900" height="320" fill="none" stroke="#333333" stroke-width="1"/>
+  <rect x="150" y="160" width="900" height="320" fill="none" stroke="#444444" stroke-width="2"/>
 
   <!-- System message -->
   <text x="600" y="200" fill="#ff9900" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="16" font-style="italic" text-anchor="middle">Hello! How can I help you today?</text>
@@ -38,5 +38,5 @@
   <text x="980" y="535" fill="#ff9900" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="14" font-weight="700" text-anchor="middle">Save</text>
 
   <!-- Footer -->
-  <text x="600" y="600" fill="#555555" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="16" text-anchor="middle">Author: Deops Dev · Credits</text>
+  <text x="600" y="580" fill="#555555" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="16" text-anchor="middle">Author: Deops Dev · <tspan fill="#00aaff">Credits</tspan></text>
 </svg>
