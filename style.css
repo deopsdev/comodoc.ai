@@ -13,7 +13,7 @@ body {
 
 :root {
     --accent-komo: #00ffcc;
-    --header-h: 120px;
+    --header-h: 128px;
     --input-h: 60px;
     --footer-h: 28px;
 }
@@ -21,7 +21,8 @@ body {
 header {
     text-align: center; 
     border-bottom: 1px solid #333; 
-    padding-bottom: 12px;
+    padding-top: 8px;
+    padding-bottom: 16px;
     margin-bottom: 16px;
     position: fixed;
     top: 0;
@@ -265,7 +266,7 @@ footer {
         font-size: 14px;
     }
     :root {
-        --header-h: 110px;
+        --header-h: 118px;
         --input-h: 56px;
         --footer-h: 26px;
     }
@@ -322,7 +323,7 @@ footer {
         font-size: 12px;
     }
     :root {
-        --header-h: 100px;
+        --header-h: 108px;
         --input-h: 52px;
         --footer-h: 24px;
     }
