@@ -5,6 +5,9 @@
       <stop offset="100%" style="stop-color:#121212;stop-opacity:1"/>
     </linearGradient>
   </defs>
+  <style>
+    .credits { fill: #00ffcc }
+  </style>
 
   <!-- Background -->
   <rect width="1200" height="630" fill="#1e1e1e"/>
@@ -38,5 +41,5 @@
   <text x="980" y="535" fill="#ff9900" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="14" font-weight="700" text-anchor="middle">Save</text>
 
   <!-- Footer -->
-  <text x="600" y="580" fill="#555555" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="16" text-anchor="middle">Author: Deops Dev · <tspan fill="#00aaff">Credits</tspan></text>
+  <text x="600" y="580" fill="#555555" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="16" text-anchor="middle">Author: Deops Dev · <tspan class="credits">Credits</tspan></text>
 </svg>
