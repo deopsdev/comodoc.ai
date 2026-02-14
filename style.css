@@ -37,7 +37,7 @@ header p {
     border: none; 
     background-color: transparent;
     padding: 0;
-    overflow: hidden; 
+    overflow: visible; 
 }
 
 #chat-messages {
@@ -50,6 +50,8 @@ header p {
     display: flex;
     flex-direction: column; 
     background: transparent;
+    /* ruang ekstra agar pesan terakhir tidak tertutup sticky input */
+    padding-bottom: 80px;
 }
 
 .message {
@@ -112,6 +114,10 @@ header p {
     margin-top: 12px;
     width: 100%;
     flex-wrap: nowrap;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
 }
 
 #user-input {
@@ -154,6 +160,7 @@ button {
     transition: all 0.2s; 
     min-width: 100px;
     height: 40px;
+    box-sizing: border-box;
 }
 
 button:hover {
@@ -263,14 +270,14 @@ footer {
         padding: 6px 8px;
     }
     button {
-        min-width: 72px;
+        min-width: 64px;
         height: 32px;
         font-size: 12px;
-        padding: 0 10px;
+        padding: 0 8px;
     }
     #send-button, #save-button {
-        min-width: 72px;
-        flex: 0 0 72px;
+        min-width: 64px;
+        flex: 0 0 64px;
         height: 32px;
     }
     .message.system {
