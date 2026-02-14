@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatMessages = document.getElementById('chat-messages'); 
 
     let conversationHistory = [
-        { role: 'system', content: 'You are Komodoc, a helpful, friendly, and secure AI assistant.' }
+        { role: 'system', content: 'You are Komo, a helpful, friendly, and secure AI assistant.' }
     ];
 
     function addMessage(text, sender) {
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const loadingDiv = document.createElement('div');
         loadingDiv.classList.add('message', 'system');
-        loadingDiv.textContent = 'Komodoc thinking...';
+        loadingDiv.textContent = 'Komo thinking...';
         chatMessages.appendChild(loadingDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -84,33 +84,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveButton = document.getElementById('save-button');
     if (saveButton) {
         saveButton.addEventListener('click', () => {
-            let chatHistory = "==================================================\n";
-            chatHistory += "             KOMODOC AI - CHAT HISTORY            \n";
-            chatHistory += "==================================================\n";
-            chatHistory += `Date: ${new Date().toLocaleString()}\n`;
-            chatHistory += "--------------------------------------------------\n\n";
-
+            const now = new Date();
+            const header = `Komo AI — Chat Transcript\nDate: ${now.toISOString()}\n`;
+            const parts = [header];
             for (let i = 1; i < conversationHistory.length; i++) {
                 const msg = conversationHistory[i];
-                const role = msg.role === 'user' ? 'YOU' : 'KOMODOC';
-                
-                chatHistory += `[${role}]\n`;
-                chatHistory += `${msg.content}\n`;
-                chatHistory += "--------------------------------------------------\n\n";
+                if (msg.role === 'system') continue;
+                const role = msg.role === 'user' ? 'User' : 'Komo';
+                parts.push(`${role}: ${msg.content}`);
             }
-            
-            chatHistory += "==================================================\n";
-            chatHistory += "End of Transcript\n";
-            chatHistory += "==================================================";
-
+            const chatHistory = parts.join('\n\n');
             const blob = new Blob([chatHistory], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             
-            const now = new Date();
             const timestamp = now.toISOString().replace(/[:.]/g, '-').slice(0, 19);
-            a.download = `chat-history-${timestamp}.txt`;
+            a.download = `komo-chat-${timestamp}.txt`;
             
             document.body.appendChild(a); 
             a.click(); 
