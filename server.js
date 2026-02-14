@@ -88,6 +88,28 @@ const requestHandler = async (req, res) => {
             }
         });
     } 
+    else if (req.url === '/credits.html') {
+        fs.readFile(path.join(__dirname, 'credits.html'), (err, content) => {
+            if (err) {
+                res.writeHead(500);
+                res.end('Error loading credits.html');
+            } else {
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(content);
+            }
+        });
+    }
+    else if (req.url === '/ogimage.png') {
+        fs.readFile(path.join(__dirname, 'ogimage.png'), (err, content) => {
+            if (err) {
+                res.writeHead(500);
+                res.end();
+            } else {
+                res.writeHead(200, { 'Content-Type': 'image/png' });
+                res.end(content);
+            }
+        });
+    }
     // 4. Membuat ikon website (Favicon) secara otomatis menggunakan format gambar SVG
     else if (req.url.startsWith('/favicon.svg')) {
         const svgContent = `
