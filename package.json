@@ -1,7 +1,7 @@
 {
-  "name": "komodoc-ai",
-  "version": "1.0.0",
-  "description": "Komodoc - Your Privacy-Focused AI Helper",
+  "name": "linguist-ai",
+  "version": "1.1.0",
+  "description": "AI Linguistics and English CEFR Tutor",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

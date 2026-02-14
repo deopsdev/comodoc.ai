@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Store conversation history
     let conversationHistory = [
-        { role: 'system', content: 'You are Komodoc, a helpful, friendly, and secure AI assistant.' }
+        { role: 'system', content: 'You are LinguistAI, an expert linguistics and English CEFR tutor.' }
     ];
 
     // Function to add a message to the chat
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add loading indicator
         const loadingDiv = document.createElement('div');
         loadingDiv.classList.add('message', 'system');
-        loadingDiv.textContent = 'Komodoc thinking...';
+        loadingDiv.textContent = 'LinguistAI is analyzing...';
         chatMessages.appendChild(loadingDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveButton = document.getElementById('save-button');
     saveButton.addEventListener('click', () => {
         let chatHistory = "==================================================\n";
-        chatHistory += "             KOMODOC AI - CHAT HISTORY            \n";
+        chatHistory += "           LINGUISTAI - CHAT HISTORY            \n";
         chatHistory += "==================================================\n";
         chatHistory += `Date: ${new Date().toLocaleString()}\n`;
         chatHistory += "--------------------------------------------------\n\n";
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Skipping the first system message
         for (let i = 1; i < conversationHistory.length; i++) {
             const msg = conversationHistory[i];
-            const role = msg.role === 'user' ? 'YOU' : 'KOMODOC';
+            const role = msg.role === 'user' ? 'YOU' : 'LINGUISTAI';
             
             chatHistory += `[${role}]\n`;
             chatHistory += `${msg.content}\n`;
