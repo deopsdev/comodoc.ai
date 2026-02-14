@@ -110,6 +110,17 @@ const requestHandler = async (req, res) => {
             }
         });
     }
+    else if (req.url === '/ogimage.svg') {
+        fs.readFile(path.join(__dirname, 'ogimage.svg'), (err, content) => {
+            if (err) {
+                res.writeHead(500);
+                res.end();
+            } else {
+                res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
+                res.end(content);
+            }
+        });
+    }
     // 4. Membuat ikon website (Favicon) secara otomatis menggunakan format gambar SVG
     else if (req.url.startsWith('/favicon.svg')) {
         const svgContent = `

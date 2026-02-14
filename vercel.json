@@ -10,7 +10,8 @@
           "style.css",
           "script.js",
           "credits.html",
-          "ogimage.png"
+          "ogimage.png",
+          "ogimage.svg"
         ]
       }
     }
