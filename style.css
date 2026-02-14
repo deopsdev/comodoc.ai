@@ -12,21 +12,22 @@ body {
 
 header {
     text-align: center; 
-    border-bottom: 2px solid #333; 
-    padding-bottom: 20px;
-    margin-bottom: 20px;
+    border-bottom: 1px solid #333; 
+    padding-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 h1 {
     color: #00ffcc; 
     letter-spacing: 2px; 
-    font-size: 1.5em;
-    margin: 0;
+    font-size: 36px;
+    margin: 0 0 6px 0;
 }
 
 header p {
     color: #888; 
-    font-size: 0.8em;
+    font-size: 16px;
+    margin: 6px 0 0 0;
 }
 
 #chat-container {
@@ -42,11 +43,13 @@ header p {
 #chat-messages {
     flex: 1; 
     overflow-y: auto; 
-    border-bottom: 1px solid #333;
-    margin-bottom: 10px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    margin-bottom: 12px;
     padding: 10px;
     display: flex;
     flex-direction: column; 
+    background: transparent;
 }
 
 .message {
@@ -55,7 +58,7 @@ header p {
     border-radius: 0; 
     max-width: 80%; 
     word-wrap: break-word; 
-    font-size: 1em;
+    font-size: 16px;
     line-height: 1.8; 
     letter-spacing: 0.5px;
 }
@@ -72,9 +75,9 @@ header p {
     color: #00ffcc; 
     align-self: flex-end; 
     margin-left: auto;
-    margin-right: 0;
-    border-left: 3px solid #00ffcc; 
-    padding-left: 15px;
+    margin-right: 12px;
+    border-right: 3px solid #00ffcc; 
+    padding-right: 12px;
     text-align: right; 
 }
 
@@ -83,8 +86,9 @@ header p {
     color: #d4d4d4; 
     align-self: flex-start; 
     margin-right: auto;
+    margin-left: 12px;
     border-left: 3px solid #d4d4d4; 
-    padding-left: 15px;
+    padding-left: 12px;
 }
 
 .message.system {
@@ -93,28 +97,34 @@ header p {
     font-style: italic;
     text-align: center;
     align-self: center; 
-    font-size: 0.8em;
+    font-size: 16px;
     border: none;
 }
 
 .input-area {
     display: flex;
-    gap: 10px; 
+    gap: 8px; 
     align-items: center;
     background-color: #252526; 
     padding: 10px;
     border: 1px solid #333;
     border-radius: 4px;
+    margin-top: 12px;
+    width: 100%;
+    flex-wrap: nowrap;
 }
 
 #user-input {
-    flex: 1; 
-    padding: 12px;
+    flex: 1 1 auto; 
+    padding: 8px 12px;
     background-color: #1e1e1e;
     border: 1px solid #444;
     color: #d4d4d4;
     font-family: inherit; 
-    border-radius: 0;
+    border-radius: 4px;
+    height: 40px;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 #user-input:focus {
@@ -122,8 +132,12 @@ header p {
     border-color: #00ffcc; 
 }
 
+#user-input::placeholder {
+    color: #777;
+}
+
 button {
-    padding: 10px 20px;
+    padding: 0 20px;
     cursor: pointer; 
     background-color: #333;
     color: #00ffcc;
@@ -132,10 +146,12 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    text-transform: uppercase; 
+    text-transform: none; 
     font-weight: bold;
-    font-size: 0.8em;
+    font-size: 14px;
     transition: all 0.2s; 
+    min-width: 100px;
+    height: 40px;
 }
 
 button:hover {
@@ -146,12 +162,25 @@ button:hover {
 #save-button {
     background-color: #333;
     color: #ff9900;
-    border-color: #ff9900;
-    padding: 10px;
+    border: 2px solid #ff9900;
+    padding: 0 16px;
+    flex: 0 0 100px;
+    white-space: nowrap;
+    min-width: 100px;
+    height: 40px;
 }
 #save-button:hover {
     background-color: #ff9900;
     color: #1e1e1e;
+}
+
+#send-button {
+    border: 2px solid #00ffcc;
+    padding: 0 16px;
+    flex: 0 0 100px;
+    white-space: nowrap;
+    min-width: 100px;
+    height: 40px;
 }
 
 footer {
@@ -159,12 +188,12 @@ footer {
     padding: 10px;
     font-size: 0.8em;
     color: #555;
-    border-top: 1px solid #333;
     margin-top: 10px;
+    margin-top: 20px;
 }
 
 footer a {
-    color: #00ffcc;
+    color: inherit;
     text-decoration: none;
 }
 footer a:hover {
