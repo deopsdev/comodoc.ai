@@ -301,6 +301,15 @@ footer a:hover {
     color: var(--accent-komo);
 }
 
+/* Non-underline untuk link Credits di semua state */
+.credits:link,
+.credits:visited,
+.credits:hover,
+.credits:focus,
+.credits:active {
+    text-decoration: none;
+}
+
 footer a:link,
 footer a:visited {
     color: var(--accent-komo);
