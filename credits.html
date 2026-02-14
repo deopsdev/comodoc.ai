@@ -1,64 +1,42 @@
 <!DOCTYPE html>
-<!-- Mendefinisikan bahasa dokumen sebagai Bahasa Inggris -->
 <html lang="en">
   <head>
-    <!-- Pengaturan karakter set UTF-8 agar mendukung berbagai simbol bahasa -->
     <meta charset="utf-8" />
-    <!-- Pengaturan viewport agar tampilan website menyesuaikan dengan lebar layar perangkat (HP/Tablet) -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Judul halaman yang akan muncul di tab browser -->
     <title>Komodoc — Sources & Licenses</title>
-    <!-- Menghubungkan file HTML ini dengan file CSS (style.css) untuk desain tampilan -->
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <!-- Kontainer utama halaman dengan gaya inline CSS untuk tata letak -->
-    <main style="max-width:800px;margin:40px auto;font-family:Inter,Segoe UI,Arial,sans-serif;color:#222;">
-      <!-- Judul Utama Halaman -->
+    <main style="max-width:800px;margin:40px auto;font-family:Inter,Segoe UI,Arial,sans-serif;color:#d4d4d4;">
       <h1>Sources &amp; Licenses</h1>
-      <!-- Paragraf pengantar tentang sumber daya dan model yang digunakan -->
       <p>This project links to and may call inference services and open‑source models. Below are the main sources and brief license notes — check each provider for full terms.</p>
 
-      <!-- Bagian 1: Model & Penyedia Layanan -->
       <h2>Models &amp; Providers</h2>
       <ul>
-        <!-- Informasi tentang Model LLaMA dari Meta -->
         <li><strong>LLaMA (Meta)</strong> — model family from Meta AI. See official page: <a href="https://ai.meta.com/llama" target="_blank">ai.meta.com/llama</a>. Check the model license and usage restrictions per release.</li>
-        <!-- Informasi tentang Hugging Face sebagai penyedia hosting model -->
         <li><strong>Hugging Face</strong> — model hosting & inference API used by this project. API keys & quotas required for hosted inference. Docs: <a href="https://huggingface.co/docs" target="_blank">huggingface.co/docs</a>.</li>
-        <!-- Catatan: Pollinations dihapus karena project beralih menggunakan Hugging Face Router -->
       </ul>
 
-      <!-- Bagian 2: Privasi & Data -->
       <h2>Privacy & Data</h2>
-      <!-- Peringatan kepada pengguna agar tidak mengirim data sensitif -->
       <p>The application is a client for third‑party inference APIs. Do not send sensitive PII or secrets to the service unless you understand the provider's data handling and retention policy.</p>
 
-      <!-- Bagian 3: Panduan Lisensi -->
-      <h2>Licence pointers</h2>
+      <h2>License Pointers</h2>
       <ul>
-        <!-- Penjelasan bahwa setiap model open-source memiliki lisensi yang berbeda-beda -->
-        <li>Open‑source models may have specific licenses (MIT, Apache‑2.0, custom). Always review the license for the exact model you use.</li>
-        <!-- Penjelasan bahwa layanan API juga memiliki aturan penggunaan (Terms of Service) sendiri -->
-        <li>Hosted provider APIs (Hugging Face, Pollinations, etc.) have separate Terms of Service — check for commercial restrictions.</li>
+        <li><strong>Open-Source Models</strong>: Each model may have specific licenses (e.g., MIT, Apache-2.0, or custom licenses like the Llama Community License). Always review the license for the exact model version you use.</li>
+        <li><strong>API Services</strong>: Hosted provider APIs (Hugging Face, etc.) have separate Terms of Service regarding data usage and commercial restrictions.</li>
+        <li><strong>Komodoc UI</strong>: The user interface is open-source and created by <a href="https://deopsdev.github.io" target="_blank" style="color:#00ffcc;">Deops Dev</a>.</li>
       </ul>
 
-      <!-- Bagian 4: Cara Mendapatkan API Key -->
       <h2>Where to get API keys</h2>
       <ul>
-        <!-- Link untuk mendapatkan token akses dari Hugging Face -->
         <li>Hugging Face: create an account and get an access token at <a href="https://huggingface.co/settings/tokens" target="_blank">huggingface.co/settings/tokens</a>.</li>
-        <!-- Instruksi umum untuk penyedia lainnya -->
-        <li>Other providers: follow their docs (links above).</li>
+        <li>Other providers: follow their respective documentation (links above).</li>
       </ul>
 
-      <!-- Tombol Kembali ke halaman utama chat -->
       <p style="margin-top:30px;"><a href="index.html" style="color:#00ffcc;text-decoration:none">&#8592; Back to Komodoc</a></p>
 
-      <!-- Garis pemisah horizontal -->
-      <hr>
-      <!-- Catatan kaki kecil yang bersifat informatif -->
-      <small style="color:#666">This page is informational only. Verify model licenses & provider terms before using in production.</small>
+      <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+      <small style="color:#888">This page is informational only. Verify model licenses & provider terms before using in production.</small>
     </main>
   </body>
 </html>

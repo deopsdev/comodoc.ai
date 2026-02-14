@@ -1,327 +1,188 @@
-/* 
- * style.css - Desain Antarmuka (Tampilan) Komodoc AI.
- * File ini mengatur warna, ukuran font, tata letak kotak, dan keindahan website.
- * Menggunakan tema gelap (Dark Mode) dengan aksen warna neon untuk kesan modern dan teknis.
- */
-
-/* PENGATURAN DASAR HALAMAN (BODY) */
 body {
-    /* Menggunakan font mesin/terminal agar terasa seperti aplikasi pemrograman yang canggih */
     font-family: 'Consolas', 'Monaco', 'Courier New', monospace; 
-    /* Menghapus jarak luar bawaan browser agar konten mepet ke pinggir */
     margin: 0;
-    /* Memberikan jarak dalam 20px agar konten tidak menyentuh tepi layar */
     padding: 20px;
-    /* Mengaktifkan mode flexbox untuk mempermudah pengaturan posisi elemen */
     display: flex; 
-    /* Mengatur arah susunan elemen dari atas ke bawah (vertikal) */
     flex-direction: column; 
-    /* Mengatur tinggi halaman agar selalu memenuhi 100% tinggi layar browser */
     height: 100vh; 
-    /* Memastikan padding dan border dihitung ke dalam lebar total elemen (mencegah overflow) */
     box-sizing: border-box; 
-    /* Warna latar belakang: Hitam abu-abu gelap (khas editor kode) */
     background-color: #1e1e1e; 
-    /* Warna teks standar: Perak terang agar nyaman dibaca di latar gelap */
     color: #d4d4d4; 
 }
 
-/* HEADER: Area judul di bagian paling atas halaman */
 header {
-    /* Mengatur semua teks di dalam header agar berada di posisi tengah */
     text-align: center; 
-    /* Membuat garis pembatas tipis di bagian bawah header */
     border-bottom: 2px solid #333; 
-    /* Memberikan ruang kosong di bawah teks sebelum garis pembatas */
     padding-bottom: 20px;
-    /* Memberikan jarak antara header dengan konten di bawahnya (chat container) */
     margin-bottom: 20px;
 }
 
-/* Judul Utama (H1) */
 h1 {
-    /* Warna Hijau Neon (Cyan): Memberikan kesan futuristik dan teknologi */
     color: #00ffcc; 
-    /* Memberikan jarak antar huruf sebesar 2px agar judul terlihat lebih luas dan modern */
     letter-spacing: 2px; 
-    /* Ukuran font: 1.5 kali lebih besar dari ukuran standar */
     font-size: 1.5em;
-    /* Menghapus margin bawaan agar tidak merusak tata letak header */
     margin: 0;
 }
 
-/* Teks penjelasan kecil di bawah judul */
 header p {
-    /* Warna Abu-abu Redup: Agar tidak mengalihkan perhatian dari judul utama */
     color: #888; 
-    /* Ukuran font lebih kecil (0.8 dari standar) untuk kesan minimalis */
     font-size: 0.8em;
 }
 
-/* KONTAINER CHAT UTAMA (Wadah pembungkus area chat dan input) */
 #chat-container {
-    /* Flex 1: Memerintahkan kontainer ini untuk menghabiskan seluruh sisa ruang yang ada di layar */
     flex: 1; 
-    /* Mengaktifkan flexbox internal untuk mengatur area pesan dan input */
     display: flex;
-    /* Susunan internal: Area pesan di atas, input area di bawah */
     flex-direction: column;
-    /* Menghapus border bawaan jika ada */
     border: none; 
-    /* Latar belakang transparan agar mengikuti warna body */
     background-color: transparent;
-    /* Menghapus padding agar area chat bisa maksimal luasnya */
     padding: 0;
-    /* Menyembunyikan konten yang meluap keluar dari kotak ini */
     overflow: hidden; 
 }
 
-/* AREA PESAN CHAT (Tempat di mana gelembung-gelembung pesan muncul) */
 #chat-messages {
-    /* Flex 1: Mengambil ruang terbesar di dalam container chat */
     flex: 1; 
-    /* Scroll Otomatis: Jika pesan sudah sangat banyak, akan muncul scrollbar vertikal */
     overflow-y: auto; 
-    /* Memberikan garis pembatas tipis di bawah area pesan sebelum area input */
     border-bottom: 1px solid #333;
-    /* Memberikan jarak 10px dengan area input di bawahnya */
     margin-bottom: 10px;
-    /* Jarak dalam 10px agar pesan tidak menempel ke dinding kotak */
     padding: 10px;
-    /* Mengaktifkan flexbox untuk mengatur arah munculnya pesan */
     display: flex;
-    /* Pesan akan muncul berurutan dari atas ke bawah */
     flex-direction: column; 
 }
 
-/* STYLING GELEMBUNG PESAN (Desain umum untuk pesan user, ai, dan system) */
 .message {
-    /* Memberikan jarak 10px antar pesan (atas dan bawah) */
     margin: 10px 0;
-    /* Memberikan ruang di dalam gelembung pesan (15px atas-bawah, 20px kiri-kanan) */
     padding: 15px 20px;
-    /* Sudut kotak dibuat 0 (siku-siku) agar terlihat seperti tampilan terminal jadul */
     border-radius: 0; 
-    /* Lebar maksimal gelembung pesan adalah 80% dari lebar area chat */
     max-width: 80%; 
-    /* Memastikan kata yang sangat panjang akan dipotong agar tidak merusak layout */
     word-wrap: break-word; 
-    /* Ukuran font standar (1em) */
     font-size: 1em;
-    /* Mengatur jarak antar baris teks (1.8) agar teks panjang lebih mudah dibaca */
     line-height: 1.8; 
-    /* Memberikan sedikit jarak antar karakter (0.5px) untuk kejelasan teks */
     letter-spacing: 0.5px;
 }
 
-/* Jarak antar paragraf (<p>) di dalam gelembung pesan */
 .message p {
-    /* Memberikan jarak 15px di bawah setiap paragraf */
     margin-bottom: 15px;
 }
-/* Menghapus jarak bawah pada paragraf terakhir agar gelembung pesan tidak terlihat terlalu panjang di bawah */
 .message p:last-child {
     margin-bottom: 0;
 }
 
-/* PESAN DARI PENGGUNA (USER) - Spesifik untuk pesan yang dikirim user */
 .message.user {
-    /* Latar belakang transparan */
     background-color: transparent; 
-    /* Warna teks Hijau Neon agar kontras dengan AI */
     color: #00ffcc; 
-    /* Menggeser gelembung pesan ke arah kanan area chat */
     align-self: flex-end; 
-    /* Memastikan margin kiri otomatis agar terdorong ke kanan */
     margin-left: auto;
-    /* Menempel ke dinding kanan */
     margin-right: 0;
-    /* Memberikan garis vertikal tebal 3px di sisi kiri sebagai ciri khas */
     border-left: 3px solid #00ffcc; 
-    /* Jarak teks dari garis kiri tersebut */
     padding-left: 15px;
-    /* Membuat teks di dalam gelembung menjadi rata kanan */
     text-align: right; 
 }
 
-/* PESAN DARI AI (KOMODOC) - Spesifik untuk balasan dari sistem AI */
 .message.ai {
-    /* Latar belakang transparan */
     background-color: transparent; 
-    /* Warna teks Perak agar terlihat netral dan tenang */
     color: #d4d4d4; 
-    /* Menggeser gelembung pesan ke arah kiri area chat */
     align-self: flex-start; 
-    /* Memastikan margin kanan otomatis agar terdorong ke kiri */
     margin-right: auto;
-    /* Memberikan garis vertikal tebal 3px warna perak di sisi kiri */
     border-left: 3px solid #d4d4d4; 
-    /* Jarak teks dari garis kiri */
     padding-left: 15px;
 }
 
-/* PESAN SISTEM / STATUS (SYSTEM) - Untuk info seperti "Thinking..." atau error */
 .message.system {
-    /* Latar belakang transparan */
     background-color: transparent;
-    /* Warna Oranye: Standar untuk informasi sistem atau peringatan */
     color: #ff9900; 
-    /* Membuat teks menjadi miring (italic) agar beda dari percakapan */
     font-style: italic;
-    /* Mengatur teks agar berada tepat di tengah-tengah */
     text-align: center;
-    /* Memposisikan gelembung di tengah area chat */
     align-self: center; 
-    /* Ukuran teks lebih kecil (0.8em) agar tidak dominan */
     font-size: 0.8em;
-    /* Tanpa garis border */
     border: none;
 }
 
-/* AREA INPUT (Baris tempat kotak ketik dan tombol kirim berada) */
 .input-area {
-    /* Menggunakan flexbox agar kotak input dan tombol bisa berjejer kesamping */
     display: flex;
-    /* Memberikan jarak 10px antar elemen di dalamnya */
     gap: 10px; 
-    /* Memastikan semua elemen di dalamnya rata secara vertikal */
     align-items: center;
-    /* Warna latar belakang: Sedikit lebih terang dari body untuk membedakan fungsi */
     background-color: #252526; 
-    /* Jarak dalam 10px */
     padding: 10px;
-    /* Garis pembatas tipis warna abu-abu gelap */
     border: 1px solid #333;
-    /* Sudut kotak sedikit membulat (4px) agar terlihat modern */
     border-radius: 4px;
 }
 
-/* KOTAK INPUT TEKS (#user-input) */
 #user-input {
-    /* Flex 1: Memerintahkan kotak input mengambil sisa ruang yang tersedia */
     flex: 1; 
-    /* Jarak dalam teks 12px agar tidak sesak */
     padding: 12px;
-    /* Warna latar belakang: Hitam pekat */
     background-color: #1e1e1e;
-    /* Garis pembatas abu-abu gelap */
     border: 1px solid #444;
-    /* Warna teks saat mengetik: Perak terang */
     color: #d4d4d4;
-    /* Menggunakan jenis font yang sama dengan pengaturan body */
     font-family: inherit; 
-    /* Sudut siku-siku (0) */
     border-radius: 0;
 }
 
-/* EFEK FOKUS: Saat user sedang aktif mengetik di kotak input */
 #user-input:focus {
-    /* Menghilangkan garis biru bawaan browser (outline) */
     outline: none;
-    /* Mengubah warna border menjadi Hijau Neon agar user tahu dia sedang aktif mengetik */
     border-color: #00ffcc; 
 }
 
-/* STYLING TOMBOL UMUM (BUTTON) */
 button {
-    /* Jarak dalam: 10px atas-bawah, 20px kiri-kanan */
     padding: 10px 20px;
-    /* Mengubah ikon kursor menjadi tangan (pointer) saat berada di atas tombol */
     cursor: pointer; 
-    /* Latar belakang tombol: Abu-abu gelap */
     background-color: #333;
-    /* Warna teks tombol: Hijau Neon */
     color: #00ffcc;
-    /* Garis border tombol sewarna dengan teksnya */
     border: 1px solid #00ffcc;
-    /* Sudut siku-siku (0) */
     border-radius: 0;
-    /* Menggunakan flexbox untuk memposisikan teks/ikon di tengah tombol */
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Mengubah semua teks di tombol menjadi huruf kapital (besar) */
     text-transform: uppercase; 
-    /* Membuat teks menjadi tebal */
     font-weight: bold;
-    /* Ukuran teks tombol agak kecil agar terlihat rapi */
     font-size: 0.8em;
-    /* Memberikan efek transisi halus (0.2 detik) saat warna berubah (hover) */
     transition: all 0.2s; 
 }
 
-/* EFEK HOVER: Saat kursor mouse berada di atas tombol */
 button:hover {
-    /* Membalik warna: Latar belakang jadi Neon, teks jadi gelap */
     background-color: #00ffcc;
     color: #1e1e1e;
 }
 
-/* TOMBOL SIMPAN (Warna Oranye) - Desain khusus untuk tombol save */
 #save-button {
-    /* Latar belakang abu-abu gelap */
     background-color: #333;
-    /* Warna teks Oranye */
     color: #ff9900;
-    /* Border Oranye */
     border-color: #ff9900;
-    /* Jarak dalam 10px */
     padding: 10px;
 }
-/* Efek Hover Tombol Simpan */
 #save-button:hover {
-    /* Membalik warna menjadi Oranye penuh */
     background-color: #ff9900;
     color: #1e1e1e;
 }
 
-/* FOOTER: Bagian informasi paling bawah */
 footer {
-    /* Teks berada di tengah */
     text-align: center;
-    /* Jarak dalam 10px */
     padding: 10px;
-    /* Ukuran font kecil (0.8em) */
     font-size: 0.8em;
-    /* Warna teks abu-abu sangat redup */
     color: #555;
-    /* Garis pembatas di atas footer */
     border-top: 1px solid #333;
-    /* Jarak antara area chat dengan footer */
     margin-top: 10px;
 }
 
-/* Link yang ada di dalam footer */
 footer a {
-    /* Warna link: Hijau Neon */
     color: #00ffcc;
-    /* Menghilangkan garis bawah standar link */
     text-decoration: none;
 }
-/* Efek saat link di footer diarahkan kursor */
 footer a:hover {
-    /* Memunculkan kembali garis bawah sebagai tanda interaksi */
     text-decoration: underline; 
 }
 
-/* STYLING SCROLLBAR: Mengatur tampilan batang penggeser (khusus browser Chrome/Edge/Safari) */
-/* 1. Ukuran lebar total scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
 }
 
-/* 2. Latar belakang jalur (track) scrollbar */
 ::-webkit-scrollbar-track {
     background: #1e1e1e;
 }
 
-/* 3. Tampilan batang yang digeser (thumb) */
 ::-webkit-scrollbar-thumb {
-    /* Warna batang: Abu-abu gelap */
     background: #444;
 }
 
-/* 4. Warna batang saat diarahkan kursor */
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
