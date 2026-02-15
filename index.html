@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta property="og:title" content="Komo AI - Privacy-First AI Helper">
+        <meta property="og:description" content="Secure personal AI buddy with PII redaction and Llama 3.1.">
+        <meta name="description" content="Privacy-first AI assistant with PII redaction. Powered by Llama 3.1.">
+        <meta name="keywords" content="AI, Chatbot, Llama 3.1, Privacy, Open Source, PII Redaction">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://komoai.vercel.app">
+        <meta property="og:image" content="https://komoai.vercel.app/ogimage.svg">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Komo AI chat interface preview">
+        <link rel="canonical" href="https://komoai.vercel.app">
+        
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Komo - AI Helper</title>
+        
+        <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <header style="text-align: center;">
+            <h1>Komo AI</h1>
+            <p>Hello! I'm Komo, your secure personal AI assistant. Let's solve problems together!</p>
+        </header>
+
+        <div id="chat-container">
+            <div id="chat-messages">
+                <div class="message system">Hello! How can I help you today?</div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Type your message here...">
+                
+                <button id="send-button">Send</button>
+                
+                <button id="save-button" title="Save Chat">Save</button>
+            </div>
+        </div>
+
+        <footer style="text-align: center;">
+            <div style="font-size: 0.8em; color: #555; margin-top: 5px;">
+                Author: Deops Dev · <a href="credits.html" target="_self" class="credits" style="color:#00ffcc">Credits</a>
+            </div>
+        </footer>
+
+        <script src="script.js"></script>
+    </body>
+</html>

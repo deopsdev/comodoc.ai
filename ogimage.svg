@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1e1e;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#121212;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .credits { fill: #00ffcc }
+  </style>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#1e1e1e"/>
+
+  <!-- Header -->
+  <text x="600" y="90" fill="#00ffcc" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="36" text-anchor="middle" letter-spacing="2">Komo AI</text>
+  <text x="600" y="120" fill="#888888" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="16" text-anchor="middle">Hello! I'm Komo, your secure personal AI assistant. Let's solve problems together!</text>
+  <rect x="150" y="140" width="900" height="2" fill="#333333"/>
+
+  <!-- Chat container -->
+  <rect x="150" y="160" width="900" height="320" fill="none" stroke="#444444" stroke-width="2"/>
+
+  <!-- System message -->
+  <text x="600" y="200" fill="#ff9900" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="16" font-style="italic" text-anchor="middle">Hello! How can I help you today?</text>
+
+  <!-- AI message (left) with left border (12px padding) -->
+  <rect x="165" y="230" width="3" height="60" fill="#d4d4d4"/>
+  <text x="177" y="255" fill="#d4d4d4" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="20">Welcome! Ask me anything.</text>
+
+  <!-- User message (right) inset from container edge (12px padding) -->
+  <rect x="1035" y="300" width="3" height="60" fill="#00ffcc"/>
+  <text x="1023" y="325" fill="#00ffcc" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="20" font-weight="700" text-anchor="end">What's the weather today?</text>
+
+  <!-- Input area -->
+  <rect x="150" y="500" width="900" height="60" rx="4" fill="#252526" stroke="#333333" stroke-width="1"/>
+  <rect x="170" y="512" width="640" height="36" fill="#1e1e1e" stroke="#444444" stroke-width="1"/>
+  <text x="185" y="535" fill="#777777" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="14">Type your message here...</text>
+  <rect x="820" y="510" width="100" height="40" fill="#333333" stroke="#00ffcc" stroke-width="2"/>
+  <text x="870" y="535" fill="#00ffcc" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="14" font-weight="700" text-anchor="middle">Send</text>
+  <rect x="930" y="510" width="100" height="40" fill="#333333" stroke="#ff9900" stroke-width="2"/>
+  <text x="980" y="535" fill="#ff9900" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="14" font-weight="700" text-anchor="middle">Save</text>
+
+  <!-- Footer -->
+  <text x="600" y="580" fill="#555555" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="16" text-anchor="middle">Author: Deops Dev · <tspan class="credits">Credits</tspan></text>
+</svg>

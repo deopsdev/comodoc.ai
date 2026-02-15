@@ -1,0 +1,24 @@
+{
+  "name": "linguist-ai",
+  "version": "1.1.0",
+  "description": "AI Linguistics and English CEFR Tutor",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test:hf-router": "node test_hf_router.js",
+    "test:hf-multimodal": "node test_hf_multimodal.js"
+  },
+  "keywords": [
+    "ai",
+    "chatbot",
+    "mistral",
+    "privacy"
+  ],
+  "author": "Deops Dev (https://deopsdev.github.io)",
+  "license": "ISC",
+  "dependencies": {},
+  "engines": {
+    "node": "20.x"
+  }
+}
