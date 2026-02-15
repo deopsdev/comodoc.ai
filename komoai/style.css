@@ -9,6 +9,7 @@ body {
     box-sizing: border-box; 
     background-color: #1e1e1e; 
     color: #d4d4d4; 
+    overflow-x: hidden;
 }
 
 :root {
@@ -26,6 +27,8 @@ header {
     right: 20px;
     background-color: #1e1e1e;
     z-index: 20;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 h1 {
@@ -52,6 +55,8 @@ header p {
     border: none; 
     background-color: transparent;
     padding: 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 #chat-messages {
@@ -67,6 +72,7 @@ header p {
     padding-bottom: 16px;
     width: 100%;
     box-sizing: border-box;
+    max-width: 100%;
 }
 
 .message {
@@ -75,6 +81,8 @@ header p {
     border-radius: 0; 
     max-width: 80%; 
     word-wrap: break-word; 
+    word-break: break-word;
+    overflow-wrap: anywhere;
     font-size: 16px;
     line-height: 1.8; 
     letter-spacing: 0.5px;
@@ -136,6 +144,7 @@ header p {
     z-index: 10;
     padding-bottom: 6px;
     box-sizing: border-box;
+    max-width: 100%;
 }
 
 #user-input {
@@ -322,18 +331,42 @@ footer {
         padding: 6px 8px;
     }
     button {
-        min-width: 64px;
+        min-width: 56px;
         height: 32px;
         font-size: 12px;
         padding: 0 8px;
     }
     #send-button, #save-button {
-        min-width: 64px;
-        flex: 0 0 64px;
+        min-width: 56px;
+        flex: 0 0 56px;
         height: 32px;
     }
     .message.system {
         font-size: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    header {
+        left: 6px;
+        right: 6px;
+    }
+    #chat-container {
+        left: 6px;
+        right: 6px;
+    }
+    .input-area {
+        left: 6px;
+        right: 6px;
+        gap: 6px;
+        padding: 6px;
+    }
+    button {
+        min-width: 48px;
+    }
+    #send-button, #save-button {
+        min-width: 48px;
+        flex: 0 0 48px;
     }
 }
 

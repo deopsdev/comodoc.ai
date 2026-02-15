@@ -24,6 +24,44 @@ const HF_TOKEN = process.env.HF_TOKEN || process.env.HF_API_KEY || null;
 // Nama model AI yang digunakan dari layanan Hugging Face
 const HF_MODEL = process.env.HF_MODEL || 'meta-llama/Llama-3.1-8B-Instruct:novita';
 
+function detectLanguage(text) {
+    if (!text || typeof text !== 'string') return { code: 'en', name: 'English' };
+    const s = text.toLowerCase();
+    const hasHira = /[\u3040-\u309F]/.test(s);
+    const hasKata = /[\u30A0-\u30FF]/.test(s);
+    const hasHan = /[\u4E00-\u9FFF]/.test(s);
+    const hasHangul = /[\uAC00-\uD7AF]/.test(s);
+    const arab = /[\u0600-\u06FF]/.test(s);
+    const cyr = /[\u0400-\u04FF]/.test(s);
+    const dev = /[\u0900-\u097F]/.test(s);
+    const thai = /[\u0E00-\u0E7F]/.test(s);
+    if (hasHira || hasKata) return { code: 'ja', name: 'Japanese' };
+    if (hasHangul) return { code: 'ko', name: 'Korean' };
+    if (hasHan) return { code: 'zh', name: 'Chinese' };
+    if (arab) return { code: 'ar', name: 'Arabic' };
+    if (cyr) return { code: 'ru', name: 'Russian' };
+    if (dev) return { code: 'hi', name: 'Hindi' };
+    if (thai) return { code: 'th', name: 'Thai' };
+    const tokens = s.replace(/[^\p{L}\s]/gu, ' ').split(/\s+/).filter(Boolean);
+    const score = (list) => tokens.reduce((acc, t) => acc + (list.has(t) ? 1 : 0), 0);
+    const idStop = new Set(['yang','dan','di','ke','dengan','atau','ini','itu','saya','kamu','tidak','ya','pada','untuk','dari','sebagai','agar','lebih','mengapa','bagaimana','apa','bisa','akan','karena','oleh']);
+    const enStop = new Set(['the','and','is','are','you','your','not','this','that','in','on','for','with','from','why','how','what','can','will','because','by']);
+    const deStop = new Set(['der','die','das','und','ist','nicht','mit','für','auf','zu','von','ich','du','wir','sie','ein','eine']);
+    const esStop = new Set(['el','la','los','las','y','de','que','en','por','para','con','del']);
+    const ptStop = new Set(['o','a','os','as','e','de','que','em','por','para','com']);
+    const frStop = new Set(['le','la','les','et','de','des','en','pour','avec','du']);
+    const scores = [
+        { code: 'id', name: 'Indonesian', v: score(idStop) },
+        { code: 'en', name: 'English', v: score(enStop) },
+        { code: 'de', name: 'German', v: score(deStop) },
+        { code: 'es', name: 'Spanish', v: score(esStop) },
+        { code: 'pt', name: 'Portuguese', v: score(ptStop) },
+        { code: 'fr', name: 'French', v: score(frStop) },
+    ].sort((a, b) => b.v - a.v);
+    const top = scores[0];
+    return top.v > 0 ? { code: top.code, name: top.name } : { code: 'en', name: 'English' };
+}
+
 /**
  * requestHandler - Fungsi utama yang dipanggil setiap kali ada permintaan (request) masuk ke server.
  * @param {object} req - Objek permintaan dari browser (berisi URL, metode POST/GET, data pesan, dll)
@@ -178,6 +216,17 @@ const requestHandler = async (req, res) => {
                             }
                             // Simpan kembali pesan yang sudah aman (sudah disensor) ke daftar pesan
                             messages[lastMsgIndex].content = message;
+                            const lang = detectLanguage(message);
+                            const langInstruction = {
+                                role: 'system',
+                                content: [
+                                    `User language: ${lang.name}.`,
+                                    `Reply in ${lang.name} with clear, natural sentences and correct grammar.`,
+                                    `Avoid mixing languages; maintain a consistent tone.`,
+                                    `If clarification is required, ask concise questions in ${lang.name}.`
+                                ].join('\n')
+                            };
+                            messages.unshift(langInstruction);
                         }
                     }
                 }
@@ -190,16 +239,17 @@ const requestHandler = async (req, res) => {
                 
                 const systemPrompt = {
                     role: 'system',
-                    content: `You are Komo — a privacy‑first multilingual AI assistant.
-- Respect privacy: backend redacts PII.
-- Default: reply in English. If the user's message is in another language, reply in that language.
-- Translate only when explicitly requested; preserve meaning and tone.
-- Avoid mixing languages; use clear, natural sentences.
-- Keep formatting and line breaks; do not add extra commentary.
-- Today: ${currentDate}.`
+                    content: [
+                        'You are Komo — a privacy‑first multilingual AI assistant and careful explainer.',
+                        'Respect privacy: backend already redacts PII. Never ask the user to re-send redacted secrets.',
+                        'Always answer in the main language of the latest user message, unless explicitly asked to translate.',
+                        'Use clear, well-structured paragraphs and correct grammar.',
+                        'Prefer short, focused answers; add examples only when they help understanding.',
+                        'For code, be precise and avoid changing semantics unless asked.',
+                        `Today (Jakarta time): ${currentDate}.`
+                    ].join('\\n')
                 };
                 
-                // Menambahkan instruksi sistem ini ke urutan paling atas daftar pesan jika belum ada
                 if (!messages.some(m => m.role === 'system')) {
                     messages.unshift(systemPrompt);
                 }

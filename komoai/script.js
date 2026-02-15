@@ -6,9 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatContainer = document.getElementById('chat-container');
     const inputArea = document.querySelector('.input-area');
     const footer = document.querySelector('footer');
+    const headerEl = document.querySelector('header');
     function adjustLayout() {
         const inputH = inputArea ? inputArea.offsetHeight : 0;
         const footerH = footer ? footer.offsetHeight : 0;
+        const headerH = headerEl ? headerEl.offsetHeight : 0;
         const extra = 16;
         chatMessages.style.paddingBottom = (inputH + footerH + extra) + 'px';
         if (inputArea) {
@@ -16,11 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (chatContainer) {
             chatContainer.style.bottom = (inputH + footerH + extra) + 'px';
+            const topExtra = 20;
+            chatContainer.style.top = (headerH + topExtra) + 'px';
         }
         const containerTop = chatContainer ? chatContainer.getBoundingClientRect().top : 0;
         const available = Math.max(120, window.innerHeight - (containerTop + inputH + footerH + extra));
         chatMessages.style.height = available + 'px';
         chatMessages.style.maxHeight = available + 'px';
+        chatMessages.style.paddingTop = extra + 'px';
     }
     adjustLayout();
     window.addEventListener('resize', adjustLayout);
