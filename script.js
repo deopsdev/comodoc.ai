@@ -17,6 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (chatContainer) {
             chatContainer.style.bottom = (inputH + footerH + extra) + 'px';
         }
+        const containerTop = chatContainer ? chatContainer.getBoundingClientRect().top : 0;
+        const available = Math.max(120, window.innerHeight - (containerTop + inputH + footerH + extra));
+        chatMessages.style.height = available + 'px';
+        chatMessages.style.maxHeight = available + 'px';
     }
     adjustLayout();
     window.addEventListener('resize', adjustLayout);
