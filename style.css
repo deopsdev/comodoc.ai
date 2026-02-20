@@ -231,6 +231,7 @@ footer {
     }
     header p {
         font-size: 14px;
+        top: 20px;
     }
     header {
         left: 12px;
@@ -277,6 +278,9 @@ footer {
     .message.system {
         font-size: 14px;
     }
+    footer {
+        margin-bottom: 20px
+    }
 }
 
 @media (max-width: 480px) {
@@ -292,6 +296,7 @@ footer {
     header {
         left: 8px;
         right: 8px;
+        top: 24px;
     }
     #chat-container {
         left: 8px;
@@ -334,6 +339,9 @@ footer {
     }
     .message.system {
         font-size: 12px;
+    }
+    footer {
+        margin-bottom: 24px;
     }
 }
 
