@@ -1,8 +1,8 @@
 body {
     font-family: 'Consolas', 'Monaco', 'Courier New', monospace; 
     margin: 0;
-    padding: 20px;
-    padding-top: 120px;
+    padding: 40px;
+    padding-top: 140px;
     display: flex; 
     flex-direction: column; 
     height: 100vh; 
@@ -18,12 +18,12 @@ body {
 header {
     text-align: center; 
     border-bottom: 1px solid #333; 
-    padding-bottom: 12px;
+    padding-bottom: 20px;
     margin-bottom: 0;
     position: fixed;
     top: 0;
-    left: 20px;
-    right: 20px;
+    left: 40px;
+    right: 40px;
     background-color: #1e1e1e;
     z-index: 20;
 }
@@ -43,10 +43,10 @@ header p {
 
 #chat-container {
     position: fixed;
-    top: 120px;
-    left: 20px;
-    right: 20px;
-    bottom: 64px;
+    top: 140px;
+    left: 40px;
+    right: 40px;
+    bottom: 80px;
     display: flex;
     flex-direction: column;
     border: none; 
@@ -130,9 +130,9 @@ header p {
     width: auto;
     flex-wrap: nowrap;
     position: fixed;
-    bottom: 40px;
-    left: 20px;
-    right: 20px;
+    bottom: 80px;
+    left: 40px;
+    right: 40px;
     z-index: 10;
     padding-bottom: 6px;
     box-sizing: border-box;
@@ -211,7 +211,7 @@ button:hover {
 }
 footer {
     text-align: center;
-    padding: 8px;
+    padding: 12px;
     font-size: 0.8em;
     color: #555;
     margin-top: 0;
@@ -224,7 +224,7 @@ footer {
 }
 @media (max-width: 768px) {
     body {
-        padding: 12px;
+        padding: 20px;
     }
     h1 {
         font-size: 30px;
@@ -234,19 +234,19 @@ footer {
         top: 20px;
     }
     header {
-        left: 12px;
-        right: 12px;
+        left: 20px;
+        right: 20px;
     }
     #chat-container {
-        left: 12px;
-        right: 12px;
-        bottom: 60px;
-        top: 112px;
+        left: 20px;
+        right: 20px;
+        bottom: 70px;
+        top: 120px;
     }
     .input-area {
-        left: 12px;
-        right: 12px;
-        bottom: 36px;
+        left: 20px;
+        right: 20px;
+        bottom: 70px;
     }
     .message {
         font-size: 14px;
@@ -285,7 +285,7 @@ footer {
 
 @media (max-width: 480px) {
     body {
-        padding: 8px;
+        padding: 16px;
     }
     h1 {
         font-size: 24px;
@@ -294,20 +294,20 @@ footer {
         font-size: 12px;
     }
     header {
-        left: 8px;
-        right: 8px;
+        left: 16px;
+        right: 16px;
         top: 24px;
     }
     #chat-container {
-        left: 8px;
-        right: 8px;
-        bottom: 56px;
-        top: 104px;
+        left: 16px;
+        right: 16px;
+        bottom: 64px;
+        top: 112px;
     }
     .input-area {
-        left: 8px;
-        right: 8px;
-        bottom: 32px;
+        left: 16px;
+        right: 16px;
+        bottom: 64px;
     }
     .message {
         font-size: 13px;
